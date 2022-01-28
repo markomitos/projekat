@@ -506,20 +506,22 @@ def numUpperM(unos,equal,i,lines):
         unos+=1
     templist=[]
     for line in lines:
-        line = line.split("|")
+        line = str(line).split("|")
         if line[9]=="aktivan":
             if unos<int(line[i]):
                 templist=templist.append(line)
+    return templist
 
 def numLowerM(unos,equal,i,lines):
     if equal==True:    
         unos-=1
     templist=[]
     for line in lines:
-        line = line.split("|")
+        line = str(line).split("|")
         if line[9]=="aktivan":
             if unos>int(line[i]):
                 templist=templist.append(line)
+    return templist
 
 def searchDate():
     isDate=False
@@ -600,6 +602,61 @@ def dateLower(date,equal,i):
                         display = display +"\t"+ part
                     print(display)
         print(150*"=")
+
+def searchDateM(lines):
+    isDate=False
+    unos1=-1
+    while isDate==False:
+        unos=input("Unesite datum po kojem zelite da pretrazite  apartmane u formatu dan.mesec.godina:\n")
+        try:
+            unos=unos.split(".")
+            date=datetime.date(int(unos[2]),int(unos[1]),int(unos[0]))
+            isDate=True
+            while unos1 not in [1,2,3,4]:
+                dateMenu()
+                unos1=eval(input(""))
+                if unos1 in [1,2,3,4]:
+                    
+                    if unos1 in [2,4]:
+                        equal=True
+                    elif unos1 in [1,3]:
+                        equal=False
+                    if unos1 in [1,2]:
+                        dateUpperM(date,equal,5,lines)
+                    elif unos1 in [3,4]:
+                        dateLowerM(date,equal,6,lines)
+                    
+                    break
+                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+            break
+        except:
+            print("Molimo Vas unesite validan datum!")
+
+def dateUpperM(date,equal,i,lines):
+    if equal==True:    
+        date=date+datetime.timedelta(days=1)
+    templist=[]
+    for line in lines:
+        line = str(line).split("|")
+        datum=line[i].split(".")
+        adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
+        if line[9]=="aktivan":
+            if date<adate:
+                templist=templist.append(line)
+    return templist
+
+def dateLowerM(date,equal,i,lines):
+    if equal==True:    
+        date=date+datetime.timedelta(days=-1)
+    templist=[]
+    for line in lines:
+        line = str(line).split("|")
+        datum=line[i].split(".")
+        adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
+        if line[9]=="aktivan":
+            if date>adate:
+                templist=templist.append(line)
+    return templist
 
 def delEquip():
     unos=""
