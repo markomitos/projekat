@@ -1,5 +1,5 @@
 #projekat Marko Mitosevic SV'56
-
+import datetime
 path = "users.txt"
 path1= "apartments.txt"
 path2= "equipment.txt"
@@ -521,8 +521,85 @@ def numLowerM(unos,equal,i,lines):
             if unos>int(line[i]):
                 templist=templist.append(line)
 
+def searchDate():
+    isDate=False
+    unos1=-1
+    while isDate==False:
+        unos=input("Unesite datum po kojem zelite da pretrazite  apartmane u formatu dan.mesec.godina:\n")
+        try:
+            unos=unos.split(".")
+            date=datetime.date(int(unos[2]),int(unos[1]),int(unos[0]))
+            isDate=True
+            while unos1 not in [1,2,3,4]:
+                dateMenu()
+                unos1=eval(input(""))
+                if unos1 in [1,2,3,4]:
+                    
+                    if unos1 in [2,4]:
+                        equal=True
+                    elif unos1 in [1,3]:
+                        equal=False
+                    if unos1 in [1,2]:
+                        dateUpper(date,equal,5)
+                    elif unos1 in [3,4]:
+                        dateLower(date,equal,6)
+                    
+                    break
+                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+            break
+        except:
+            print("Molimo Vas unesite validan datum!")
 
+def dateMenu():
+    print("Unesite broj ispred kriterijuma po kojem zelite da pretrazite apartmane")
+    print("1. Pretraga apartmana za datum veci od datog")
+    print("2. Pretraga apartmana za datum veci ili jednak od datog")
+    print("3. Pretraga apartmana za datum manji od datog")
+    print("4. Pretraga apartmana za datum manji ili jednak od datog")
 
+def dateUpper(date,equal,i):
+    if equal==True:    
+        date=date+datetime.timedelta(days=1)
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+        displayHeader()
+        for line in lines:
+            display=""
+            line = line.split("|")
+            if line[9]=="aktivan":
+                datum=line[i].split(".")
+                adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
+                if date<adate:
+                    for part in line:
+                        if part==line[9]:
+                            continue
+                        if part==line[8]:
+                            display=display+"\t"
+                        display = display +"\t"+ part
+                    print(display)
+        print(150*"=")
+
+def dateLower(date,equal,i):
+    if equal==True:    
+        date=date+datetime.timedelta(days=-1)
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+        displayHeader()
+        for line in lines:
+            display=""
+            line = line.split("|")
+            if line[9]=="aktivan":
+                datum=line[i].split(".")
+                adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
+                if date>adate:
+                    for part in line:
+                        if part==line[9]:
+                            continue
+                        if part==line[8]:
+                            display=display+"\t"
+                        display = display +"\t"+ part
+                    print(display)
+        print(150*"=")
 
 def delEquip():
     unos=""
@@ -817,5 +894,5 @@ if __name__ == "__main__":
     #user=login()
     #role=checkRole(user)
     #menu(role,user)
-    listApart("savob")
+    searchDate()
     
