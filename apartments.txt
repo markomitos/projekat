@@ -1,1 +1,1 @@
-1|ceo stan|2|4|Bulevar Mihajla pupina 15, Novi Sad|1.1.2022.|31.1.2022.|savob|200|aktivan|TV,internet
+1|ceo stan|2|4|Bulevar Mihajla pupina 15, Novi Sad|1.2.2022.|31.2.2022.|savob|50|aktivan|TV,internet

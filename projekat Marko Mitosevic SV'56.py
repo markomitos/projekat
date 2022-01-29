@@ -1,5 +1,6 @@
 #projekat Marko Mitosevic SV'56
 import datetime
+from turtle import back
 path = "users.txt"
 path1= "apartments.txt"
 path2= "equipment.txt"
@@ -94,13 +95,13 @@ def checkRole(user):
 
 def menu(role,user):
     if role==0: #admin
-        menuAdmin(role)
+        menuAdmin(role,user)
     elif role==1:#domacin
         menuLandlord(role,user)
     else:#gost
-        menuGuest(role)
+        menuGuest(role,user)
 
-def menuAdmin(role):
+def menuAdmin(role,user):
     inp=0
     validinput=[1,2,3,4,5,6,7,8,9,10,11,12]
     while inp not in validinput:
@@ -123,27 +124,27 @@ def menuAdmin(role):
             break
         print("Unesite validnu opciju!")
     if inp==1:
-        listApart(role)
+        listApart(role,user)
     elif inp==2:
-        searchApart(role)
+        searchApart(role,user)
     elif inp==3:
-        multiSearchApart(role)
+        multiSearchApart(role,user)
     elif inp==4:
-        mostPop(role)
+        mostPop(role,user)
     elif inp==5:
-        searchRes(role)
+        searchRes(role,user)
     elif inp==6:
-        newLandLord()
+        newLandLord(user)
     elif inp==7:
-        newEquip()
+        newEquip(user)
     elif inp==8:
-        delEquip()
+        delEquip(user)
     elif inp==9:
-        blockUser()
+        blockUser(user)
     elif inp==10:
-        analitics()
+        analitics(user)
     elif inp==11:
-        login()
+        newLogin()
     elif inp==12:
         exit()
 
@@ -169,15 +170,15 @@ def menuLandlord(role,user):
             break
         print("Unesite validnu opciju!")
     if inp==1:
-        listApart(role)
+        listApart(role,user)
     elif inp==2:
-        searchApart(role)
+        searchApart(role,user)
     elif inp==3:
-        multiSearchApart(role)
+        multiSearchApart(role,user)
     elif inp==4:
-        mostPop(role)
+        mostPop(role,user)
     elif inp==5:
-        newApart(user)
+        newApart(user,user)
     elif inp==6:
         editApart(user)
     elif inp==7:
@@ -187,11 +188,11 @@ def menuLandlord(role,user):
     elif inp==9:
         approveRes(user)
     elif inp==10:
-        login()
+        newLogin()
     elif inp==11:
         exit()
 
-def menuGuest(role):
+def menuGuest(role,user):
     inp=0
     validinput=[1,2,3,4,5,6,7,8,9]
     while inp not in validinput:
@@ -211,25 +212,25 @@ def menuGuest(role):
             break
         print("Unesite validnu opciju!")
     if inp==1:
-        listApart(role)
+        listApart(role,user)
     elif inp==2:
-        searchApart(role)
+        searchApart(role,user)
     elif inp==3:
-        multiSearchApart(role)
+        multiSearchApart(role,user)
     elif inp==4:
-        mostPop(role)
+        mostPop(role,user)
     elif inp==5:
-        resApart()
+        resApart(user)
     elif inp==6:
-        listRes()
+        listRes(user)
     elif inp==7:
-        delRes()
+        delRes(user)
     elif inp==8:
-        login()
+        newLogin()
     elif inp==9:
         exit()
 
-def listApart(role):
+def listApart(role,user):
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         displayHeader()
@@ -245,23 +246,23 @@ def listApart(role):
                     display = display +"\t"+ part
                 print(display)
         print(150*"=")
-        backToMenu(role)
+        backToMenu(role,user)
 
 def displayHeader():
     print(150*"=")
     print("\tSifra\tTip\tBroj Soba|Broj gostiju\tAdresa\t\t\t\t\tDospupnost apartmana\t\tDomacin\t\tDnevni zajam\tDodaci")
 
-def backToMenu(role):
+def backToMenu(role,user):
     unos=" "
     while unos[0] != "d" or unos[0] != "n":
         unos=input("Da li zelite da se vratite u meni?(Da/Ne)\n").lower().strip()
         if unos[0]== "d":
-            menu(role)
+            menu(role,user)
         elif unos[0]=="n":
             exit()
         print("Pogresan unos! Molimo vas da unesete Da ili Ne:")
         
-def searchApart(role):
+def searchApart(role,user):
     unos = -1
     while unos not in [1,2,3,4]:
         searchMenu()
@@ -277,7 +278,7 @@ def searchApart(role):
                 searchPrice()
             break
         print("Pogresan unos, molim vas unesite validan broj!")
-    backToMenu(role)
+    backToMenu(role,user)
 
 def searchCity():
     unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
@@ -411,7 +412,7 @@ def numLower(unos,equal,i):
                     print(display)
         print(150*"=")
 
-def multiSearchApart(role):
+def multiSearchApart(role,user):
     unos = -1
     stop = False
     with open(path1,encoding ="utf-8") as file:
@@ -439,7 +440,8 @@ def multiSearchApart(role):
                 stop=True
                 break
             print("Molimo vas unesite da ili ne!")
-            
+    backToMenu(role,user)
+
 def searchCityM(lines):
     unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
     tmpline=[]
@@ -658,7 +660,7 @@ def dateLowerM(date,equal,i,lines):
                 templist=templist.append(line)
     return templist
 
-def delEquip():
+def delEquip(user):
     unos=""
     pas=""
     good=False
@@ -690,7 +692,7 @@ def delEquip():
         if good==True:
             break
         print("Dato ime dodatne opreme ne postoji!")      
-    backToMenu(0)     
+    backToMenu(0,user)     
 
 def checkEquipRes(user):
     with open(path1,encoding ="utf-8") as file:
@@ -703,7 +705,7 @@ def checkEquipRes(user):
                     return True
 
 
-def newEquip():
+def newEquip(user):
     unos=""
     pas=""
     good=True
@@ -731,7 +733,7 @@ def newEquip():
         if good==False:
             break
         print("Dato ime dodatne opreme je vec u upotrebii!")      
-    backToMenu(0)
+    backToMenu(0,user)
 
 
 def checkEquip(unos):
@@ -774,7 +776,7 @@ def checkEquipPas(user,pas):
                     return False
     return False  
 
-def newLandLord():
+def newLandLord(us):
     isUser = True
     while isUser == True:
         user=input("Unesite korisnicko ime domacina: ")
@@ -789,10 +791,11 @@ def newLandLord():
             with open(path,"w",encoding ="utf-8") as file:
                 korisnik="{}|{}|{}|{}|{}|{}|{}|domacin\n".format(user,pas,ime,prezime,pol,tel,mail)
                 file.write(korisnik)
-                return user
+                #return user
 
         else:
             print("Dato korisnicko ime je vec u upotrebi!")
+    backToMenu(0,us)
 
 def newApart(user):
     with open(path1,encoding ="utf-8") as file:
@@ -846,6 +849,7 @@ def newApart(user):
 
         file.write(newfile)
     print("Dodatna oprema " + unos + " je uspesno dodata")
+    backToMenu(0,user)
 
 def listEquip():
     with open(path2,encoding ="utf-8") as file:
@@ -859,9 +863,9 @@ def listEquip():
             line=line.split("|")
             print(line[0]+"    | "+line[1].strip())
         print(120*"=")
+    
 
-
-def blockUser():
+def blockUser(user):
     isUser=False
     while isUser==False:
         user=input("Unesite korisnicko ime korisnika koga zelite blokirati: ")
@@ -890,10 +894,10 @@ def blockUser():
     with open(path2,"w",encoding ="utf-8") as file:
 
         file.write(newfile)
-    print("Dati korisnik je uspesno obrisan")
+    print("Dati korisnik je uspesno blokiran")
 
 
-    backToMenu(2)
+    backToMenu(0,user)
 
 def delApart(user):
     listApartL(user)
@@ -917,7 +921,7 @@ def delApart(user):
         users=file.read()
         users=users.replace(apartman,"")
     print("Apartman je uspesno obrisan!")
-
+    backToMenu(1,user)
 
 def checkPsp(pas,user):
     with open(path1,encoding ="utf-8") as file:
@@ -945,11 +949,14 @@ def listApartL(user):
                     display = display +"\t"+ part
                 print(display)
         print(150*"=")
-        
+
+def newLogin():
+    user=login()
+    role=checkRole(user)
+    menu(role,user)    
 
 if __name__ == "__main__":
-    #user=login()
-    #role=checkRole(user)
-    #menu(role,user)
-    searchDate()
+    newLogin()
+    
+        
     
