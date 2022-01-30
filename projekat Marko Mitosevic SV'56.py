@@ -593,7 +593,8 @@ def dateLower(date,equal,i):
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
-                datum=line[i].split(".")
+                dat=line[i].split(",")
+                datum=dat[len(dat)-1].split(".")
                 adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
                 if date>adate:
                     for part in line:
@@ -950,13 +951,82 @@ def listApartL(user):
                 print(display)
         print(150*"=")
 
+def checkPspA(pas):
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            try:
+                line=line.split("|")
+                if line[9]=="aktivan":
+                    if line[0]==pas:
+                        return True
+            except:
+                return False
+        return False
+
+def getDates(sif):
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+                line=line.split("|")
+                if line[0]==sif:
+                    beg=line[5].split(",")
+                    end=line[6].split(",")
+                    i=0
+                    print("Broj | Pocetak     | Kraj     ")
+                    for date in beg:
+                        print("{:2d}.  | {:11s} | {:11s} ".format((i+1),date,end[i]))
+                        i+=1
+                return i  ,beg,end
+                        
+
+def resApart(user):
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+        displayHeader()
+        for line in lines:
+            display=""
+            line = line.split("|")
+            if line[9]=="aktivan":
+                for part in line:
+                    if part==line[9]:
+                        continue
+                    if part==line[8]:
+                        display=display+"\t"
+                    display = display +"\t"+ part
+                print(display)
+        print(150*"=")
+    ok=False
+    while ok==False:
+        sif=input("Unesite sifru apartmana kojeg zelite da rezervisete: ")
+        ok=checkPspA(sif)
+        if ok==True:
+            break
+        else:
+            print("Ne postoji aktivan apartman sa datom sifrom! Molimo vas unesite validnu sifru apartmana.")
+    i,beg,end=getDates(sif)
+    num=-1
+    while num>i+1 or num<0:
+        num=eval(input("Unesite broj ispred termina koji zelite da rezervisete: "))
+        if num<i+1 and num>0:
+            num=num-1
+            poc=beg[num].split(".")
+            pocetak=datetime.date(int(poc[2]),int(poc[1]),int(poc[0]))
+            krj=end[num].split(".")
+            print(krj[1])
+            kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
+            begg=input("Unesite pocetni datum rezervacije: ")
+            days=input("Unesite broj dana koji zelite da rezervsite u terminu: ")
+        else:
+            print("Unesite validan broj!")
+
 def newLogin():
     user=login()
     role=checkRole(user)
     menu(role,user)    
 
 if __name__ == "__main__":
-    newLogin()
-    
+    #newLogin()
+    resApart("tam")
         
     
