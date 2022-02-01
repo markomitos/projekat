@@ -1,5 +1,7 @@
 #projekat Marko Mitosevic SV'56
 import datetime
+from errno import EBADE
+from pydoc import isdata
 from turtle import back
 path = "users.txt"
 path1= "apartments.txt"
@@ -1015,10 +1017,86 @@ def resApart(user):
             krj=end[num].split(".")
             print(krj[1])
             kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
-            begg=input("Unesite pocetni datum rezervacije: ")
-            days=input("Unesite broj dana koji zelite da rezervsite u terminu: ")
+            isDate=False
+            while isDate==False:
+                begg=input("Unesite pocetni datum rezervacije u formatu dan.mesec.godina: ")
+                begg=begg.split(".")
+                try:
+                    begdate=datetime.date(int(begg[2]),int(begg[1]),int(begg[0]))
+                    if begdate<pocetak or begdate>kraj:
+                        print("Datum mora biti unutar termina!")
+                        continue
+                    else:
+                        isDate=True
+                        break
+                except:
+                    print("Unesite validan datum!")
+
+            valid=False
+            while valid==False:
+                 daynum=eval(input("Unesite broj dana koji zelite da rezervsite u terminu: "))
+                 if daynum>0:
+                    try:
+                        enddate=begdate+datetime.timedelta(days=daynum)
+                        if enddate>kraj:
+                            print("Unesite validan broj dana za dati termin!")
+                            continue
+                        else:
+                            valid=True
+                            break
+                    except:
+                        print("Unesite validan broj dana!")
+            brgost=getGuestNum(sif)
+            unos=input("Da li rezerviste apartman za sebe?(Da/Ne)").lower().strip()
+            while unos[0] != "d" or unos[0] !="n":
+                if unos[0]== "d":
+                    glist=user
+                    b=1
+                    break
+                elif unos[0]=="n":
+                    b=0
+                    glist=""
+                    break
+                print("Molimo vas odgovorite sa da ili ne!")
+            while b<brgost:
+                guest=input("Unesite ime i prezime " + str(b+1) + ". gosta: ")
+                if b==0:
+                    glist=guest
+                else:
+                    glist=glist + "," + guest
+                b=b+1
+            cenaDan=getPrice(sif)
+            cena=cenaDan*daynum
+            with open(path3,encoding ="utf-8") as file:
+                newfile=file.read()
+                str=sif + "|" + begdate + "|" + f'{daynum}' + "|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "\n\n"
+                newline=newfile.rfind("\n")
+                newfile=newfile[:newline]+str
+            with open(path3,"w",encoding ="utf-8") as file:
+
+                file.write(newfile)
+
         else:
             print("Unesite validan broj!")
+
+
+def getGuestNum(pas):
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+                line=line.split("|")
+                if line[9]=="aktivan":
+                    if line[0]==pas:
+                        return int(line[3])
+
+def getPrice(pas):
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+                line=line.split("|")
+                if line[9]=="aktivan":
+                    if line[0]==pas:
+                        return float(line[8])
 
 def newLogin():
     user=login()
