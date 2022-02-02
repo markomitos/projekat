@@ -1,8 +1,5 @@
 #projekat Marko Mitosevic SV'56
 import datetime
-from errno import EBADE
-from pydoc import isdata
-from turtle import back
 path = "users.txt"
 path1= "apartments.txt"
 path2= "equipment.txt"
@@ -134,7 +131,7 @@ def menuAdmin(role,user):
     elif inp==4:
         mostPop(role,user)
     elif inp==5:
-        searchRes(role,user)
+        searchRes(user)
     elif inp==6:
         newLandLord(user)
     elif inp==7:
@@ -434,7 +431,7 @@ def multiSearchApart(role,user):
                     lines=searchPriceM(lines)
                 break
             print("Pogresan unos, molim vas unesite validan broj!")
-        unos=input("Da li zelite da postavite jos kriterijuma zaz pretragu?(Da/Ne)").lower().strip()
+        unos=input("Da li zelite da postavite jos kriterijuma za pretragu?(Da/Ne)").lower().strip()
         while unos[0] != "d" or unos[0] !="n":
             if unos[0]=="d":
                 break
@@ -1009,74 +1006,81 @@ def resApart(user):
     i,beg,end=getDates(sif)
     num=-1
     while num>i+1 or num<0:
-        num=eval(input("Unesite broj ispred termina koji zelite da rezervisete: "))
-        if num<i+1 and num>0:
-            num=num-1
-            poc=beg[num].split(".")
-            pocetak=datetime.date(int(poc[2]),int(poc[1]),int(poc[0]))
-            krj=end[num].split(".")
-            print(krj[1])
-            kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
-            isDate=False
-            while isDate==False:
-                begg=input("Unesite pocetni datum rezervacije u formatu dan.mesec.godina: ")
-                begg=begg.split(".")
-                try:
-                    begdate=datetime.date(int(begg[2]),int(begg[1]),int(begg[0]))
-                    if begdate<pocetak or begdate>kraj:
-                        print("Datum mora biti unutar termina!")
-                        continue
-                    else:
-                        isDate=True
-                        break
-                except:
-                    print("Unesite validan datum!")
-
-            valid=False
-            while valid==False:
-                 daynum=eval(input("Unesite broj dana koji zelite da rezervsite u terminu: "))
-                 if daynum>0:
+        try:
+            num=eval(input("Unesite broj ispred termina koji zelite da rezervisete: "))
+            if num<i+1 and num>0:
+                num=num-1
+                poc=beg[num].split(".")
+                pocetak=datetime.date(int(poc[2]),int(poc[1]),int(poc[0]))
+                krj=end[num].split(".")
+                kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
+                isDate=False
+                while isDate==False:
+                    begg=input("Unesite pocetni datum rezervacije u formatu dan.mesec.godina: ")
+                    pdan=begg
+                    begg=begg.split(".")
                     try:
-                        enddate=begdate+datetime.timedelta(days=daynum)
-                        if enddate>kraj:
-                            print("Unesite validan broj dana za dati termin!")
+                        begdate=datetime.date(int(begg[2]),int(begg[1]),int(begg[0]))
+                        if begdate<pocetak or begdate>kraj:
+                            print("Datum mora biti unutar termina!")
                             continue
                         else:
-                            valid=True
+                            isDate=True
                             break
                     except:
-                        print("Unesite validan broj dana!")
-            brgost=getGuestNum(sif)
-            unos=input("Da li rezerviste apartman za sebe?(Da/Ne)").lower().strip()
-            while unos[0] != "d" or unos[0] !="n":
-                if unos[0]== "d":
-                    glist=user
-                    b=1
-                    break
-                elif unos[0]=="n":
-                    b=0
-                    glist=""
-                    break
-                print("Molimo vas odgovorite sa da ili ne!")
-            while b<brgost:
-                guest=input("Unesite ime i prezime " + str(b+1) + ". gosta: ")
-                if b==0:
-                    glist=guest
-                else:
-                    glist=glist + "," + guest
-                b=b+1
-            cenaDan=getPrice(sif)
-            cena=cenaDan*daynum
-            with open(path3,encoding ="utf-8") as file:
-                newfile=file.read()
-                str=sif + "|" + begdate + "|" + f'{daynum}' + "|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "\n\n"
-                newline=newfile.rfind("\n")
-                newfile=newfile[:newline]+str
-            with open(path3,"w",encoding ="utf-8") as file:
+                        print("Unesite validan datum!")
 
-                file.write(newfile)
+                valid=False
+                while valid==False:
+                    daynum=eval(input("Unesite broj dana koji zelite da rezervsite u terminu: "))
+                    if daynum>0:
+                        try:
+                            enddate=begdate+datetime.timedelta(days=daynum)
+                            if enddate>kraj:
+                                print("Unesite validan broj dana za dati termin!")
+                                continue
+                            else:
+                                valid=True
+                                break
+                        except:
+                            print("Unesite validan broj dana!")
+                brgost=getGuestNum(sif)
+                unos="o"
+                while unos[0] != "d" or unos[0] !="n":
+                    unos=input("Da li rezerviste apartman za sebe?(Da/Ne)").lower().strip()
+                    if unos[0]== "d":
+                        glist=user
+                        b=1
+                        break
+                    elif unos[0]=="n":
+                        b=0
+                        glist=""
+                        break
+                    print("Molimo vas odgovorite sa da ili ne!")
+                while b<brgost:
+                    guest=input("Unesite ime i prezime " + f'{b+1}'  + ". gosta(ako ste vec uneli sve goste unesite x): ")
+                    if guest.lower()=="x":
+                        break
+                    if b==0:
+                        glist=guest
+                    else:
+                        glist=glist + "," + guest
+                    b=b+1
+                cenaDan=getPrice(sif)
+                cena=cenaDan*daynum
+                with open(path3,encoding ="utf-8") as file:
+                    newfile=file.read()
+                    str=sif + "|"  + pdan + "|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "\n\n"
+                    newline=newfile.rfind("\n")
+                    newfile=newfile[:newline]+str
+                with open(path3,"w",encoding ="utf-8") as file:
 
-        else:
+                    file.write(newfile)
+                print("Rezervacija je uspesno kreirana!")
+                backToMenu(2,user)
+            else:
+                print("Unesite validan broj!")
+        except:
             print("Unesite validan broj!")
 
 
@@ -1098,6 +1102,57 @@ def getPrice(pas):
                     if line[0]==pas:
                         return float(line[8])
 
+def searchRes(user):
+    unos=""
+    while unos not in [1,2,3,4]:
+        menuRes()
+        try:
+            unos=eval(input(""))
+            if unos in [1,2,3]:
+                if unos==1:
+                    searchResS()
+                elif unos==2:
+                    searchResA()
+                elif unos==3:
+                    searchResU()
+                break
+        except:
+            print("Pogresan unos, molim vas unesite validan broj!")
+        print("Pogresan unos, molim vas unesite validan broj!")
+
+def searchResS():
+    print("1. Pretraga prihvacenih rezervacija\n2.Pretraga odbijenih rezervacija")
+    opt=""
+    while opt not in [1,2]:
+        try:
+            opt=eval(input("Unesite broj ispred kriterijuma po kojem zelite da vrsite pretragu"))
+            if opt not in [1,2]:
+                print("Molimo vas unesite validnu opciju!")
+        except:
+            print("Molimo vas unesite validnu opciju!")
+    if opt==1:
+        listStatus("prihvacena")
+    else:
+        listStatus("odbijena")
+
+def listStatus(status):
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti ")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[5].strip()==status:
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:70s}".format(lin[0],lin[1],lin[2],lin[3],lin[4]))
+
+def menuRes():
+    print("Unesite broj ispred kriterijuma po kojem zelite da pretrazite rezervacije: ")
+    print("1. Pretraga rezervacija po statusu")
+    print("2. Pretraga rezervacija po adresi")
+    print("3. Pretraga rezervacija po korisnickom imenu domacina")
+    
+
 def newLogin():
     user=login()
     role=checkRole(user)
@@ -1105,6 +1160,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    resApart("tam")
+    listStatus("kreirana")
         
     
