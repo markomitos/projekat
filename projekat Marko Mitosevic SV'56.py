@@ -1104,7 +1104,7 @@ def getPrice(pas):
 
 def searchRes(user):
     unos=""
-    while unos not in [1,2,3,4]:
+    while unos not in [1,2,3]:
         menuRes()
         try:
             unos=eval(input(""))
@@ -1119,6 +1119,7 @@ def searchRes(user):
         except:
             print("Pogresan unos, molim vas unesite validan broj!")
         print("Pogresan unos, molim vas unesite validan broj!")
+    backToMenu(0,user)
 
 def searchResS():
     print("1. Pretraga prihvacenih rezervacija\n2.Pretraga odbijenih rezervacija")
@@ -1146,6 +1147,28 @@ def listStatus(status):
             if lin[5].strip()==status:
                 print("{:2s}    | {:11s} | {:7s} | {:6s} | {:70s}".format(lin[0],lin[1],lin[2],lin[3],lin[4]))
 
+def searchResA():
+    adress=input("Unesite adresu po kojoj zelite da se vrsi pretraga: ").strip().lower()
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+    sifre=[" "]
+    for line in lines:
+        if line=="\n":
+            break
+        line = line.split("|")
+        if line[9]=="aktivan":
+            if adress in line[4].lower():
+                sifre.append(line[0])
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[0] in sifre:
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[0],lin[1],lin[2],lin[3],lin[4],lin[5].strip()))
+                
 def menuRes():
     print("Unesite broj ispred kriterijuma po kojem zelite da pretrazite rezervacije: ")
     print("1. Pretraga rezervacija po statusu")
@@ -1160,6 +1183,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    listStatus("kreirana")
+    searchRes("petar12")
         
     
