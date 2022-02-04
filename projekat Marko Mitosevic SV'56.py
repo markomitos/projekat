@@ -85,9 +85,9 @@ def checkRole(user):
             for line in lines:
                 line = line.split("|")
                 if user == line[0]:
-                    if line[7]=="admin":
+                    if line[7].strip()=="admin":
                         return 2
-                    elif line[7]=="domacin":
+                    elif line[7].strip()=="domacin":
                         return 1
                     else:
                         return 0
@@ -104,7 +104,7 @@ def menuAdmin(role,user):
     inp=0
     validinput=[1,2,3,4,5,6,7,8,9,10,11,12]
     while inp not in validinput:
-        print("="*150)
+        print("="*100)
         print("1. Pregled aktivnih apartmana")
         print("2. Pretraga apartmana")
         print("3. Visekriterijumska pretraga apartmana")
@@ -117,7 +117,7 @@ def menuAdmin(role,user):
         print("10. Izvestavanje")
         print("11. Odjava")
         print("12. Izlaz")
-        print("="*150)
+        print("="*100)
         inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
         if inp in validinput:
             break
@@ -151,7 +151,7 @@ def menuLandlord(role,user):
     inp=0
     validinput=[1,2,3,4,5,6,7,8,9,10,11]
     while inp not in validinput:
-        print("="*150)
+        print("="*100)
         print("1. Pregled aktivnih apartmana")
         print("2. Pretraga apartmana")
         print("3. Visekriterijumska pretraga apartmana")
@@ -163,7 +163,7 @@ def menuLandlord(role,user):
         print("9. Potvrda ili odbijanje rezervacija")
         print("10. Odjava")
         print("11. Izlaz")
-        print("="*150)
+        print("="*100)
         inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
         if inp in validinput:
             break
@@ -183,7 +183,7 @@ def menuLandlord(role,user):
     elif inp==7:
         delApart(user)
     elif inp==8:
-        listRes(user)
+        listResL(user)
     elif inp==9:
         approveRes(user)
     elif inp==10:
@@ -195,7 +195,7 @@ def menuGuest(role,user):
     inp=0
     validinput=[1,2,3,4,5,6,7,8,9]
     while inp not in validinput:
-        print("="*150)
+        print("="*100)
         print("1. Pregled aktivnih apartmana")
         print("2. Pretraga apartmana")
         print("3. Visekriterijumska pretraga apartmana")
@@ -205,7 +205,7 @@ def menuGuest(role,user):
         print("7. Ponistavanje rezervacija")
         print("8. Odjava")
         print("9. Izlaz")
-        print("="*150)
+        print("="*100)
         inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
         if inp in validinput:
             break
@@ -1070,8 +1070,9 @@ def resApart(user):
                 cena=cenaDan*daynum
                 with open(path3,encoding ="utf-8") as file:
                     newfile=file.read()
-                    str=sif + "|"  + pdan + "|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "\n\n"
                     newline=newfile.rfind("\n")
+                    sifra=newfile.count("\n")
+                    str=sif + "|"  + pdan + "|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "|" + f'{sifra}' + "\n\n"
                     newfile=newfile[:newline]+str
                 with open(path3,"w",encoding ="utf-8") as file:
 
@@ -1145,7 +1146,7 @@ def listStatus(status):
                 break
             lin=line.split("|")
             if lin[5].strip()==status:
-                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:70s}".format(lin[0],lin[1],lin[2],lin[3],lin[4]))
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:70s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4]))
 
 def searchResA():
     adress=input("Unesite adresu po kojoj zelite da se vrsi pretraga: ").strip().lower()
@@ -1167,14 +1168,87 @@ def searchResA():
                 break
             lin=line.split("|")
             if lin[0] in sifre:
-                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[0],lin[1],lin[2],lin[3],lin[4],lin[5].strip()))
-                
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
+
+def searchResU():
+    isUser=False
+    isLandlord=False
+    while isUser==False or isLandlord==False:
+        user=input("Unesite korisnicko ime domacina:")
+        isUser=checkUser(user)
+        if isUser==True:
+            if checkRole(user)==1:
+                isLandlord=True
+                break
+            else:
+                print("Uneti korisnik nije domacin!")
+                continue
+        else:
+            print("Unesite validno korisnicko ime domacina!")
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+    sifre=[" "]
+    for line in lines:
+        if line=="\n":
+            break
+        line = line.split("|")
+        if line[9]=="aktivan":
+            if user==line[7]:
+                sifre.append(line[0])
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[0] in sifre:
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
+
+
 def menuRes():
     print("Unesite broj ispred kriterijuma po kojem zelite da pretrazite rezervacije: ")
     print("1. Pretraga rezervacija po statusu")
     print("2. Pretraga rezervacija po adresi")
     print("3. Pretraga rezervacija po korisnickom imenu domacina")
     
+def listRes(user):
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            gost=lin[4].split(",")
+            if gost[0]==user:
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
+    backToMenu(2,user)
+
+
+def listResL(user):
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+        sifre=[" "]
+        for line in lines:
+            if line=="\n":
+                break
+            line = line.split("|")
+            if line[9]=="aktivan":
+                if user==line[7]:
+                    sifre.append(line[0])
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[0] in sifre:
+                if lin[5]=="kreirana":
+                    print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
+    backToMenu(1,user)
+
 
 def newLogin():
     user=login()
@@ -1183,6 +1257,7 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    searchRes("petar12")
+    listResL("savob")
+    
         
     
