@@ -1,5 +1,6 @@
 #projekat Marko Mitosevic SV'56
 import datetime
+from turtle import back
 path = "users.txt"
 path1= "apartments.txt"
 path2= "equipment.txt"
@@ -1249,6 +1250,62 @@ def listResL(user):
                     print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
     backToMenu(1,user)
 
+def delRes(user):
+    isResPas=False
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            gost=lin[4].split(",")
+            if gost[0]==user:
+                print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
+    while isResPas==False:
+        sif=input("Unesite sifru rezervacije koju zelite da obrisete: ")
+        isResPas=checkResPas(sif,user)
+        if isResPas==True:
+            break
+        else:
+            print("Data sifra nije u upotrebi sa vasom rezervacijom, molimo vas unesite validnu sifru!")
+            continue
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[5].strip()=="prihvacena":
+                resetTermin(lin[1],lin[2])
+        i=0
+        for line in lines:
+            line = line.split("|")
+            if user == line[0]:
+                res=lines[i]
+                break
+            i=i+1
+    with open(path1,encoding ="utf-8") as file:
+        users=file.read()
+        users=users.replace(res,"")
+
+
+
+    backToMenu(2,user)
+
+def checkResPas(sif,user):
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[6].strip()==sif:
+                gost=lin[4].split(",")
+                if gost[0]==user:
+                    return True
+        return False
 
 def newLogin():
     user=login()
