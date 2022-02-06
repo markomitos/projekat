@@ -1307,6 +1307,105 @@ def checkResPas(sif,user):
                     return True
         return False
 
+def approveRes(user):
+    with open(path1,encoding ="utf-8") as file:
+        lines = file.readlines()
+        sifre=[" "]
+        for line in lines:
+            if line=="\n":
+                break
+            line = line.split("|")
+            if line[9]=="aktivan":
+                if user==line[7]:
+                    sifre.append(line[0])
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        validPas=[]
+        print("Sifra |  Datum      | Br Dana | Cena   | Gosti " + 45*" " + "| Status")
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[0] in sifre:
+                if lin[5]=="kreirana":
+                    validPas.append(lin[6].strip())
+                    print("{:2s}    | {:11s} | {:7s} | {:6s} | {:50s} | {:20s}".format(lin[6].strip(),lin[1],lin[2],lin[3],lin[4],lin[5]))
+    sif="-1"
+    while sif not in validPas:
+        sif=input("Unesite sifru rezervaciju koju zelite da potvrdite/odbijete: ")
+        if sif in validPas:
+            break
+        else:
+            print("Unesite validnu sifru!")
+    
+    inp="3"
+    while inp[0] != "1" and inp[0]!= "2":
+        print("1. Potvrda rezervacije")
+        print("2. Odbijanje rezervacije")
+        inp=input("Unesite broj ispred opcije koju zelite da uradite: ")
+        if inp[0]=="1":
+            approved=True
+            break
+        elif inp[0]=="2":
+            approved=False
+            break
+        else:
+            print("Molimo vas unesite validnu opciju!")
+    
+    if approved==True:
+        with open(path3,encoding ="utf-8") as file:
+            lines=file.readlines()
+            for line in lines:
+                if line=="\n":
+                    break
+                line=line.split("|")
+                if line[6].strip()==sif:
+                    pas=line[0]
+                    bg=line[1].split(".")
+                    begt=datetime.date(int(bg[2]),int(bg[1]),int(bg[0]))
+                    newbeg=begt+datetime.timedelta(-1)
+                    endt=begt+datetime.timedelta(float(line[2]))
+                    newend=endt+datetime.timedelta(1)
+        with open(path1,encoding ="utf-8") as file:
+            lines=file.readlines()
+            for line in lines:
+                line=line.split("|")
+                if line[0]==pas:
+                    beg=line[5].split(",")
+                    end=line[6].split(",")
+                    i=0
+                    for termin in beg:
+                        t=termin.split(".")
+                        bt=datetime.date(int(t[2]),int(t[1]),int(t[0]))
+                        if bt>begt or termin==beg[len(beg)-1]:
+                            novit=str(newend.day)+"."+str(newend.month)+"."+str(newend.year)
+                            if i==0:
+                                posle=",".join(beg[1:])
+                                newbt=beg[0]+"," + novit+","+posle
+                            elif beg[i:]==[]:
+                                pre=",".join(beg[0:i])
+                                newbt=pre+","+novit + "," + beg[i]
+                            else:
+                                pre=",".join(beg[0:i])
+                                posle=",".join(beg[i:])
+                                newbt=pre+","+novit+","+posle
+                            novite=str(newbeg.day)+"."+str(newbeg.month)+"."+str(newbeg.year)
+                            if end[0:i-1]==[]:
+                                poslee=",".join(end[i-1:])
+                                newet=novite+","+poslee
+                            elif end[i-1:]==[]:
+                                pree=",".join(end[0:i-1])
+                                newet=pree+","+novite + "," + end[len(end)-1]
+                            else:
+                                pree=",".join(end[0:i-1])
+                                poslee=",".join(end[i-1:])
+                                newet=pree+","+novite+","+poslee
+                            print(newbt,newet)  #skloni posle
+                            i=i+1
+                        #sacuvanje i granicni slucajevi
+        
+    backToMenu(1,user)
+
 def newLogin():
     user=login()
     role=checkRole(user)
@@ -1314,7 +1413,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    listResL("savob")
+    approveRes('savob')
     
-        
     
