@@ -1369,22 +1369,28 @@ def approveRes(user):
         with open(path1,encoding ="utf-8") as file:
             lines=file.readlines()
             for line in lines:
-                line=line.split("|")
-                if line[0]==pas:
-                    beg=line[5].split(",")
-                    end=line[6].split(",")
+                lin=line.split("|")
+                if lin[0]==pas:
+                    beg=lin[5].split(",")
+                    end=lin[6].split(",")
                     i=0
                     for termin in beg:
                         t=termin.split(".")
                         bt=datetime.date(int(t[2]),int(t[1]),int(t[0]))
                         if bt>begt or termin==beg[len(beg)-1]:
                             novit=str(newend.day)+"."+str(newend.month)+"."+str(newend.year)
-                            if i==0:
+                            if i==0:#slucaje popravi! za granicne
                                 posle=",".join(beg[1:])
-                                newbt=beg[0]+"," + novit+","+posle
+                                if posle!="":
+                                    newbt=beg[0]+"," + novit+","+posle
+                                else:
+                                    newbt=beg[0]+"," + novit
                             elif beg[i:]==[]:
                                 pre=",".join(beg[0:i])
-                                newbt=pre+","+novit + "," + beg[i]
+                                if pre !="":
+                                    newbt=pre+","+novit + "," + beg[i]
+                                else:
+                                    newbt=novit + "," + beg[i]
                             else:
                                 pre=",".join(beg[0:i])
                                 posle=",".join(beg[i:])
@@ -1392,17 +1398,63 @@ def approveRes(user):
                             novite=str(newbeg.day)+"."+str(newbeg.month)+"."+str(newbeg.year)
                             if end[0:i-1]==[]:
                                 poslee=",".join(end[i-1:])
-                                newet=novite+","+poslee
+                                if poslee!="":
+                                    newet=novite+","+poslee
+                                    break
+                                else:
+                                    newet=novite
+                                    break
                             elif end[i-1:]==[]:
                                 pree=",".join(end[0:i-1])
-                                newet=pree+","+novite + "," + end[len(end)-1]
+                                if pree!="":
+                                    newet=pree+","+novite + "," + end[len(end)-1]
+                                    break
+                                else:
+                                    newet=novite + "," + end[len(end)-1]
+                                    break
                             else:
                                 pree=",".join(end[0:i-1])
                                 poslee=",".join(end[i-1:])
                                 newet=pree+","+novite+","+poslee
-                            print(newbt,newet)  #skloni posle
+                                break
                             i=i+1
-                        #sacuvanje i granicni slucajevi
+                    pocetni=newbt.split(",")
+                    krajnji=newet.split(",")
+                    try:#za brisanje jednodnevnih datuma
+                        for j in range(len(pocetni)):
+                            if pocetni[j]==krajnji[j]:
+                                newbt=",".join(pocetni[0:j])+",".join(pocetni[j+1:])
+                                newet=",".join(krajnji[0:j])+",".join(krajnji[j+1:])
+                                pocetni.remove(pocetni[j])
+                                krajnji.remove(krajnji[j])
+                    except:
+                        pass #zbog removea da stane na kraju niza datuma
+                    lin[5]=newbt
+                    lin[6]=newet
+                    newline="|".join(lin)
+        for i in range(len(lines)):
+            if lines[i].split("|")[0]==pas:
+                lines[i]=newline
+        newfile="".join(lines)
+    with open(path1,"w",encoding ="utf-8") as file:
+        print(newfile)
+        file.write(newfile)
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for i in range(len(lines)):
+            tmpline=lines[i].split("|")
+            if tmpline==["\n"]:
+                break
+            elif tmpline[6].strip()==sif:
+                tmpline[5]="prihvacena"
+                lines[i]="|".join(tmpline)
+        newfile="".join(lines)
+    with open(path3,"w",encoding ="utf-8") as file:
+        print(newfile)
+        file.write(newfile)
+
+
+                        
         
     backToMenu(1,user)
 
