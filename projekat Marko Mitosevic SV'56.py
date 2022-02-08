@@ -1379,7 +1379,11 @@ def approveRes(user):
                         bt=datetime.date(int(t[2]),int(t[1]),int(t[0]))
                         if bt>begt or termin==beg[len(beg)-1]:
                             novit=str(newend.day)+"."+str(newend.month)+"."+str(newend.year)
-                            if i==0:#slucaje popravi! za granicne
+                            poslednjip=end[len(beg)-1].split(".")
+                            poslednjipdatum=datetime.date(int(poslednjip[2]),int(poslednjip[1]),int(poslednjip[0]))
+                            if newend>=poslednjipdatum:
+                                newbt=",".join(beg)
+                            elif i==0:
                                 posle=",".join(beg[1:])
                                 if posle!="":
                                     newbt=beg[0]+"," + novit+","+posle
@@ -1387,7 +1391,9 @@ def approveRes(user):
                                     newbt=beg[0]+"," + novit
                             elif beg[i:]==[]:
                                 pre=",".join(beg[0:i])
-                                if pre !="":
+                                if newbeg>=poslednjipdatum:
+                                    newet=beg
+                                elif pre !="":
                                     newbt=pre+","+novit + "," + beg[i]
                                 else:
                                     newbt=novit + "," + beg[i]
@@ -1396,7 +1402,13 @@ def approveRes(user):
                                 posle=",".join(beg[i:])
                                 newbt=pre+","+novit+","+posle
                             novite=str(newbeg.day)+"."+str(newbeg.month)+"."+str(newbeg.year)
-                            if end[0:i-1]==[]:
+                            poslednji=end[len(end)-1].split(".")
+                            poslednjidatum=datetime.date(int(poslednji[2]),int(poslednji[1]),int(poslednji[0]))
+                            if newend>=poslednjidatum:
+                                pree=",".join(end[0:i])
+                                newet=pree+","+novite
+                                break
+                            elif end[0:i-1]==[]:
                                 poslee=",".join(end[i-1:])
                                 if poslee!="":
                                     newet=novite+","+poslee
@@ -1406,18 +1418,24 @@ def approveRes(user):
                                     break
                             elif end[i-1:]==[]:
                                 pree=",".join(end[0:i-1])
-                                if pree!="":
+                                poslednji=end[len(end)-1].split(".")
+                                poslednjidatum=datetime.date(int(poslednji[2]),int(poslednji[1]),int(poslednji[0]))
+                                if newend>=poslednjidatum:
+                                    newet=pree+","+novite
+                                    break
+                                elif pree!="":
                                     newet=pree+","+novite + "," + end[len(end)-1]
                                     break
                                 else:
                                     newet=novite + "," + end[len(end)-1]
                                     break
+                                
                             else:
                                 pree=",".join(end[0:i-1])
                                 poslee=",".join(end[i-1:])
                                 newet=pree+","+novite+","+poslee
                                 break
-                            i=i+1
+                        i=i+1
                     pocetni=newbt.split(",")
                     krajnji=newet.split(",")
                     try:#za brisanje jednodnevnih datuma

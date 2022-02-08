@@ -1,5 +1,5 @@
 1|1.1.2022.|1|50.0|tam|zavrsena|1
 1|05.02.2022.|7|350.0|tam,nihil nihilovic,kene beri|prihvacena|2
-1|25.02.2022.|1|100.0|rockfeller,Jeff Bezos,Elon Musk,Bill Gates|kreirana|3
+1|25.02.2022.|1|100.0|rockfeller,Jeff Bezos,Elon Musk,Bill Gates|prihvacena|3
 1|14.2.2022.|2|100.0|rockfeller,Miss Rockefeller|kreirana|4
 
