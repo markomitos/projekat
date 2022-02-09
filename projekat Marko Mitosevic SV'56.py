@@ -238,19 +238,17 @@ def listApart(role,user):
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
-                for part in line:
-                    if part==line[9]:
-                        continue
-                    if part==line[8]:
-                        display=display+"\t"
-                    display = display +"\t"+ part
+                begdate=line[5].split(",")
+                enddate=line[6].split(",")
+                display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                display=display.strip()
                 print(display)
         print(150*"=")
         backToMenu(role,user)
-
+ 
 def displayHeader():
     print(150*"=")
-    print("\tSifra\tTip\tBroj Soba|Broj gostiju\tAdresa\t\t\t\t\tDospupnost apartmana\t\tDomacin\t\tDnevni zajam\tDodaci")
+    print("Sifra | Tip     | Br Soba | Br gostiju | Adresa"+ 43*" "+ "|  Dospupnost apartmana  | Domacin    | Dnevna cena | Dodatni materijal")
 
 def backToMenu(role,user):
     unos=" "
@@ -290,12 +288,10 @@ def searchCity():
             line = line.split("|")
             if line[9]=="aktivan":
                 if unos in line[4].lower():
-                    for part in line:
-                        if part==line[8]:
-                            display=display+"\t"
-                        if part==line[9]:
-                            continue
-                        display = display +"\t"+ part
+                    begdate=line[5].split(",")
+                    enddate=line[6].split(",")
+                    display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                    display=display.strip()
                     print(display)
         print(150*"=")
         
@@ -382,12 +378,10 @@ def numUpper(unos,equal,i):
             line = line.split("|")
             if line[9]=="aktivan":
                 if unos<int(line[i]):
-                    for part in line:
-                        if part==line[9]:
-                            continue
-                        if part==line[8]:
-                            display=display+"\t"
-                        display = display +"\t"+ part
+                    begdate=line[5].split(",")
+                    enddate=line[6].split(",")
+                    display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                    display=display.strip()
                     print(display)
         print(150*"=")
 
@@ -403,12 +397,10 @@ def numLower(unos,equal,i):
             line = line.split("|")
             if line[9]=="aktivan":
                 if unos>int(line[i]):
-                    for part in line:
-                        if part==line[9]:
-                            continue
-                        if part==line[8]:
-                            display=display+"\t"
-                        display = display +"\t"+ part
+                    begdate=line[5].split(",")
+                    enddate=line[6].split(",")
+                    display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                    display=display.strip()
                     print(display)
         print(150*"=")
 
@@ -574,12 +566,10 @@ def dateUpper(date,equal,i):
                 datum=line[i].split(".")
                 adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
                 if date<adate:
-                    for part in line:
-                        if part==line[9]:
-                            continue
-                        if part==line[8]:
-                            display=display+"\t"
-                        display = display +"\t"+ part
+                    begdate=line[5].split(",")
+                    enddate=line[6].split(",")
+                    display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                    display=display.strip()
                     print(display)
         print(150*"=")
 
@@ -597,12 +587,10 @@ def dateLower(date,equal,i):
                 datum=dat[len(dat)-1].split(".")
                 adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
                 if date>adate:
-                    for part in line:
-                        if part==line[9]:
-                            continue
-                        if part==line[8]:
-                            display=display+"\t"
-                        display = display +"\t"+ part
+                    begdate=line[5].split(",")
+                    enddate=line[6].split(",")
+                    display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                    display=display.strip()
                     print(display)
         print(150*"=")
 
@@ -942,12 +930,10 @@ def listApartL(user):
             display=""
             line = line.split("|")
             if line[7]==user:
-                for part in line:
-                    if part==line[9]:
-                        continue
-                    if part==line[8]:
-                        display=display+"\t"
-                    display = display +"\t"+ part
+                begdate=line[5].split(",")
+                enddate=line[6].split(",")
+                display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                display=display.strip()
                 print(display)
         print(150*"=")
 
@@ -988,12 +974,10 @@ def resApart(user):
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
-                for part in line:
-                    if part==line[9]:
-                        continue
-                    if part==line[8]:
-                        display=display+"\t"
-                    display = display +"\t"+ part
+                begdate=line[5].split(",")
+                enddate=line[6].split(",")
+                display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                display=display.strip()
                 print(display)
         print(150*"=")
     ok=False
@@ -1471,9 +1455,11 @@ def approveRes(user):
         print(newfile)
         file.write(newfile)
 
+    backToMenu(1,user)
 
-                        
-        
+def editApart(user):
+    listApartL(user)
+
     backToMenu(1,user)
 
 def newLogin():
@@ -1483,6 +1469,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    approveRes('savob')
+    editApart("savob")
     
     
