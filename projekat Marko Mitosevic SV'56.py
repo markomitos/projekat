@@ -927,7 +927,8 @@ def listApartL(user):
         lines = file.readlines()
         displayHeader()
         for line in lines:
-            display=""
+            if line=="\n":
+                break
             line = line.split("|")
             if line[7]==user:
                 begdate=line[5].split(",")
@@ -1291,7 +1292,7 @@ def checkResPas(sif,user):
                     return True
         return False
 
-def approveRes(user):
+def approveRes(user):#odbijene!!
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         sifre=[" "]
@@ -1459,7 +1460,131 @@ def approveRes(user):
 
 def editApart(user):
     listApartL(user)
-
+    with open(path1,"r+",encoding ="utf-8") as file:
+        isPas = False
+        while isPas==False:
+            sif=input("Unesite sifru apartmana za kojeg zelite da promenite podatke: ")
+            isPas=checkPsp(sif,user)
+            if isPas==True:
+                break
+            else:
+                print("Unesite validnu sifru apartmana!")
+        lines=file.readlines()
+        j=0
+        for line in lines:
+            lin=line.split("|")
+            if lin[0]==sif:
+                inp=""
+                while inp=="":
+                    print("Trenutni tip apartmana je " +lin[1]+ ",ako zelite da ga promenite upisite novi tip, a ako zelite da ostane isti unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        lin[1]=inp
+                inp=""
+                while inp=="":
+                    print("Trenutni broj soba je " +lin[2]+ ",ako zelite da ga promenite upisite novi broj, a ako zelite da ostane isti unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        lin[2]=inp
+                inp=""
+                while inp=="":
+                    print("Trenutni maksimalni broj gostiju je " +lin[3]+ ",ako zelite da ga promenite upisite novi broj, a ako zelite da ostane isti unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        lin[3]=inp
+                inp=""
+                while inp=="":
+                    print("Trenutna adresa je " +lin[4]+ ",ako zelite da je promenite upisite novu adresu, a ako zelite da ostane ista unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        lin[4]=inp
+                inp=""
+                while inp=="":
+                    print("Trenutni poceci termina su redom " +lin[5]+ ",ako zelite da ih promenite upisite nove u istoj formi, a ako zelite da ostanu isti unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        dat=inp.split(",")
+                        for datum in dat:
+                            try:
+                                datum=datum.split(".")
+                                date=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
+                            
+                                
+                            except:
+                                print("Unesite datume u validnoj formi!")
+                                inp=""
+                                continue
+                        lin[5]=inp
+                inp=""   
+                while inp=="":
+                    print("Trenutni krajevi termina su redom " +lin[6]+ ",ako zelite da ih promenite upisite nove u istoj formi, a ako zelite da ostanu isti unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        dat=inp.split(",")
+                        for datum in dat:
+                            try:
+                                datum=datum.split(".")
+                                date=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
+                            
+                                
+                            except:
+                                print("Unesite datume u validnoj formi!")
+                                inp=""
+                                continue
+                        lin[6]=inp   
+                inp=""
+                while inp=="":
+                    print("Trenutni cena po danu je " +lin[8]+ ",ako zelite da je promenite upisite novi broj, a ako zelite da ostane isti unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        lin[8]=inp
+                inp=""
+                while inp=="":
+                    print("Trenutno stanje apartmana je " +lin[9]+ ",ako zelite da ga promenite upisite novo stanje, a ako zelite da ostane isto unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp.lower()=="aktivan" or inp.lower()=="neaktivan":
+                        lin[9]=inp
+                    else:
+                        print("Status moze biti samo aktivan ili neaktivan, unesite validan status! ")
+                        inp=""
+                inp=""
+                while inp=="":
+                    print("Trenutna dodatna oprema u apartmanu je " +lin[10].strip()+ ",ako zelite da je promenite upisite novu listu dodante opreme sa zarezom izmedju oprema, a ako zelite da ostane ista unesite x: ")
+                    inp=input("")
+                    if inp[0].lower()=="x":
+                        break
+                    elif inp!="":
+                        equip=inp.split(",")
+                        for item in equip:
+                            isEquip=checkEquip(item)
+                            if isEquip==False:
+                                print("Molimo vas unesite validnu dodatnu opremu!")
+                                inp=""
+                                continue
+                        lin[10]=inp
+                break
+            else:
+                j=j+1
+        print("".join(lines[j+1:]))
+        newfile="".join(lines[:j])+"|".join(lin)+"".join(lines[j+1:])
+    with open(path1,"w",encoding ="utf-8") as file:
+        file.write(newfile)   
     backToMenu(1,user)
 
 def newLogin():
