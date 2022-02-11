@@ -1262,7 +1262,7 @@ def delRes(user):
                 break
             lin=line.split("|")
             if lin[5].strip()=="prihvacena":
-                resetTermin(lin[1],lin[2])
+                resetTermin(lin[1],lin[2],lin[0])
         i=0
         for line in lines:
             line = line.split("|")
@@ -1270,13 +1270,44 @@ def delRes(user):
                 res=lines[i]
                 break
             i=i+1
-    with open(path1,encoding ="utf-8") as file:
-        users=file.read()
-        users=users.replace(res,"")
-
+    with open(path3,encoding ="utf-8") as file:
+        reserv=file.read()
+        newfile=reserv.replace(res,"")
+    with open(path3,"w",encoding ="utf-8") as file:
+        file.write(newfile)
 
 
     backToMenu(2,user)
+
+def resetTermin(beglist,days,sif):
+    beg=beglist.split(".")
+    begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+    begdate= begdate + datetime.timedelta(-1)
+    enddate=begdate+datetime.timedelta(days+2)
+    pocetak=str(begdate.day)+"."+str(begdate.month)+"."+str(begdate.year)
+    kraj=str(enddate.day)+"."+str(enddate.month)+"."+str(enddate.year)
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            lin=line.split("|")
+            if lin[0]==sif:
+                poc=lin[5].split(",")
+                krj=lin[6].split(",")
+                for date in poc:
+                    if date == kraj:
+                        poc=poc.remove(date)
+                lin[5]=",".join(poc)
+                for date in krj:
+                    if date == pocetak:
+                        krj = krj.remove(date)
+                lin[6]=",".join(krj)
+                oldline=line
+                newline="|".join(lin)
+    with open(path1,encoding ="utf-8") as file:
+        oldfile=file.read()
+        newfile=oldfile.replace(oldline,newline)            
+    with open(path1,"w",encoding ="utf-8") as file:
+        file.write(newfile)
 
 def checkResPas(sif,user):
     with open(path3,encoding ="utf-8") as file:
@@ -1439,22 +1470,33 @@ def approveRes(user):#odbijene!!
             if lines[i].split("|")[0]==pas:
                 lines[i]=newline
         newfile="".join(lines)
-    with open(path1,"w",encoding ="utf-8") as file:
-        print(newfile)
-        file.write(newfile)
-    with open(path3,encoding ="utf-8") as file:
-        lines=file.readlines()
-        for i in range(len(lines)):
-            tmpline=lines[i].split("|")
-            if tmpline==["\n"]:
-                break
-            elif tmpline[6].strip()==sif:
-                tmpline[5]="prihvacena"
-                lines[i]="|".join(tmpline)
-        newfile="".join(lines)
-    with open(path3,"w",encoding ="utf-8") as file:
-        print(newfile)
-        file.write(newfile)
+        with open(path1,"w",encoding ="utf-8") as file:
+            file.write(newfile)
+        with open(path3,encoding ="utf-8") as file:
+            lines=file.readlines()
+            for i in range(len(lines)):
+                tmpline=lines[i].split("|")
+                if tmpline==["\n"]:
+                    break
+                elif tmpline[6].strip()==sif:
+                    tmpline[5]="prihvacena"
+                    lines[i]="|".join(tmpline)
+            newfile="".join(lines)
+        with open(path3,"w",encoding ="utf-8") as file:
+            file.write(newfile)
+    else:
+        with open(path3,encoding ="utf-8") as file:
+            lines=file.readlines()
+            for i in range(len(lines)):
+                tmpline=lines[i].split("|")
+                if tmpline==["\n"]:
+                    break
+                elif tmpline[6].strip()==sif:
+                    tmpline[5]="odbijena"
+                    lines[i]="|".join(tmpline)
+            newfile="".join(lines)
+        with open(path3,"w",encoding ="utf-8") as file:
+            file.write(newfile)
 
     backToMenu(1,user)
 
@@ -1581,7 +1623,6 @@ def editApart(user):
                 break
             else:
                 j=j+1
-        print("".join(lines[j+1:]))
         newfile="".join(lines[:j])+"|".join(lin)+"".join(lines[j+1:])
     with open(path1,"w",encoding ="utf-8") as file:
         file.write(newfile)   
@@ -1594,6 +1635,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    editApart("savob")
+    approveRes("savob")
     
     
