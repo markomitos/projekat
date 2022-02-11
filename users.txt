@@ -1,7 +1,7 @@
-petar12|lozinka12|Petar|Petrovic|muski|065417282|petarpetrovic1@gmail.com|admin
-tam|sljokice1zad|Tamara|Popovic|zenski|069125453|tam@gmail.com|gost
-savob|budv4|Savo|Bacic|muski|061789654|savobacic@gmail.com|domacin
-fox|b0gj3matematicar|Branko|Kljajic|muski|065478965|foxbussiness@gmail.com|gost
+petar12|lozinka12|Petar|Petrović|muski|065417282|petarpetrovic1@gmail.com|admin
+tam|sljokice1zad|Tamara|Popović|zenski|069125453|tam@gmail.com|gost
+savob|budv4|Savo|Bačić|muski|061789654|savobacic@gmail.com|domacin
+fox|b0gj3matematicar|Branko|Kljajić|muski|065478965|foxbussiness@gmail.com|gost
 rockfeller|7srca|John|Rockfeller|muski|001457896|rockfeller@gmail.com|gost
 realtrump|america2020|Donald|Trump|muski|001748596|donaldtrump@gmail.com|domacin
 johnyh|b0rd3rs|Johny|Harris|muski|001365974|johnyharris@gmail.com|gost

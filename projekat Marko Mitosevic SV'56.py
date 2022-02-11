@@ -1119,7 +1119,7 @@ def searchResS():
         except:
             print("Molimo vas unesite validnu opciju!")
     if opt==1:
-        listStatus("prihvacena")
+        listStatus("prihvaćena")
     else:
         listStatus("odbijena")
 
@@ -1261,7 +1261,7 @@ def delRes(user):
             if line=="\n":
                 break
             lin=line.split("|")
-            if lin[5].strip()=="prihvacena":
+            if lin[5].strip()=="prihvaćena":
                 resetTermin(lin[1],lin[2],lin[0])
         i=0
         for line in lines:
@@ -1479,7 +1479,7 @@ def approveRes(user):#odbijene!!
                 if tmpline==["\n"]:
                     break
                 elif tmpline[6].strip()==sif:
-                    tmpline[5]="prihvacena"
+                    tmpline[5]="prihvaćena"
                     lines[i]="|".join(tmpline)
             newfile="".join(lines)
         with open(path3,"w",encoding ="utf-8") as file:
