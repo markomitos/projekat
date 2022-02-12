@@ -1,6 +1,7 @@
 #projekat Marko Mitosevic SV'56
 import datetime
 from turtle import back
+from typing import OrderedDict
 path = "users.txt"
 path1= "apartments.txt"
 path2= "equipment.txt"
@@ -119,10 +120,14 @@ def menuAdmin(role,user):
         print("11. Odjava")
         print("12. Izlaz")
         print("="*100)
-        inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
-        if inp in validinput:
-            break
-        print("Unesite validnu opciju!")
+        try:
+            inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
+            if inp in validinput:
+                break
+            else:
+                print("Unesite validnu opciju!")
+        except:
+            print("Unesite validnu opciju!")
     if inp==1:
         listApart(role,user)
     elif inp==2:
@@ -165,10 +170,14 @@ def menuLandlord(role,user):
         print("10. Odjava")
         print("11. Izlaz")
         print("="*100)
-        inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
-        if inp in validinput:
-            break
-        print("Unesite validnu opciju!")
+        try:
+            inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
+            if inp in validinput:
+                break
+            else:
+                print("Unesite validnu opciju!")
+        except:
+            print("Unesite validnu opciju!")
     if inp==1:
         listApart(role,user)
     elif inp==2:
@@ -207,10 +216,14 @@ def menuGuest(role,user):
         print("8. Odjava")
         print("9. Izlaz")
         print("="*100)
-        inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
-        if inp in validinput:
-            break
-        print("Unesite validnu opciju!")
+        try:
+            inp = eval(input("Unesite broj ispred opcije koju zelite da odaberete: \n"))
+            if inp in validinput:
+                break
+            else:
+                print("Unesite validnu opciju!")
+        except:
+            print("Unesite validnu opciju!")
     if inp==1:
         listApart(role,user)
     elif inp==2:
@@ -1628,6 +1641,50 @@ def editApart(user):
         file.write(newfile)   
     backToMenu(1,user)
 
+def mostPop(role,user):
+    lista=[]
+    cities=[]
+    dict={}
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line == "\n":
+                break
+            line=line.split("|")
+            lista.append(line[0])
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for  item in lista:
+            for line in lines:
+                if line == "\n":
+                    break
+                line=line.split("|")
+                if line[0]==item:
+                    city=line[4].split(",")
+                    cities.append(city[1])
+    for city in cities:
+        if city in dict:
+            dict[city]+=1
+        else:
+            dict[city]=1
+    sortedValues=sorted(dict.values(),reverse=True)
+    sortedDict={}
+
+    for value in sortedValues:
+        for key in dict.keys():
+            if dict[key] == value:
+                sortedDict[key]=dict[key]
+    print("Grad " + 20*" "+"| Broj rezervacija")
+    i=0
+    for key,value in sortedDict.items():
+        print("{:25s}|{:10d}".format(key, value))
+        i+=1
+        if i > 10:
+            break
+    
+    backToMenu(role,user)
+
+
 def newLogin():
     user=login()
     role=checkRole(user)
@@ -1635,6 +1692,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    approveRes("savob")
+    mostPop(1,"savob")
     
     
