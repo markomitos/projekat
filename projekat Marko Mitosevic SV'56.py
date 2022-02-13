@@ -1,5 +1,6 @@
 #projekat Marko Mitosevic SV'56
 import datetime
+from time import daylight
 from turtle import back
 from typing import OrderedDict
 path = "users.txt"
@@ -53,6 +54,8 @@ def checkPas(user,pas):
     with open(path,encoding ="utf-8") as file:
         lines = file.readlines()
         for line in lines:
+            if line=="\n":
+                return False
             line = line.split("|")
             if user == line[0]:
                 if pas== line[1]:
@@ -1684,6 +1687,132 @@ def mostPop(role,user):
     
     backToMenu(role,user)
 
+def analiticsMenu():
+    print("1. Lista potvrdjenih rezervisanih apartmana za izabran datum")
+    print("2. Lista potvrdjenih rezervisanih apartmana za izabranog domacina")
+    print("3. Godisnji pregled angazovanja domacina")
+    print("4. Mesecni pregled angazovanja po domacinu")
+    print("5. Ukupan broj i cena potvrdjenih rezervacija za izabran dan i izabranog domacina")
+    print("6. Pregled zastupljenosti pojedinacnog grada")
+
+
+def analitics(user):
+    isValid=False
+    while isValid==False:
+        analiticsMenu()
+        try:
+            unos=eval(input("Unesite broj ispre opcije koju zelite: "))
+            if unos in [1,2,3,4,5,6]:
+                isValid=True
+                break
+            else:
+                print("Molimo vas unesite validnu opciju!")
+        except:
+            print("Molimo vas unesite validnu opciju!")
+    if unos==1:
+        dayRes()
+    elif unos==2:
+        lRes()
+    elif unos==3:
+        yearL()
+    elif unos==4:
+        monthL()
+    elif unos==5:
+        dayL()
+    elif unos==6:
+        cityStats()
+    backToMenu(0,user)
+
+def dayRes():
+    isDate=False
+    while isDate==False:
+        dan=input("Unesite dan za koji zelite da vidite potvrdjene apartmane, u formi dan.mesec.godina:")
+        try:
+            dan=dan.split(".")
+            date=datetime.date(int(dan[2]),int(dan[1]),int(dan[0]))
+            isDate=True
+            break
+        except:
+            print("Unesite validan datum!")
+    apart=[]
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            beg=lin[1].split(".")
+            begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+            if date>=begdate:
+                enddate=begdate+datetime.timedelta(int(lin[2]))
+                if date<=enddate:
+                    if lin[5]=="prihvaćena":
+                        apart.append(lin[0])
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        displayHeader()
+        for line in lines:
+            if line=="\n":
+                break
+            line=line.split("|")
+            if line[0] in apart:
+                begdate=line[5].split(",")
+                enddate=line[6].split(",")
+                display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                display=display.strip()
+                print(display)
+
+def lRes():
+    isUser=False
+    role=-1
+    while isUser==False or role!=1:
+        user=input("Unesite korisnicko ime domacina po kojem zelite da vrsite pretragu: ")
+        isUser=checkUser(user)
+        if isUser==True:
+            role=checkRole(user)
+            if role==1:
+                break
+            else:
+                print("Dati korisnik nije domacin!")
+        else:
+            print("Unesite validnog korisnika!")
+
+    apart=[]
+    appApart=[]
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            line=line.split("|")
+            if line[7]==user:
+                apart.append(line[0])
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            line=line.split("|")
+            if line[0] in apart:
+                if line[5]=="prihvaćena":
+                    appApart.append(line[0])
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        displayHeader()
+        for line in lines:
+            if line=="\n":
+                break
+            line=line.split("|")
+            if line[0] in appApart:
+                begdate=line[5].split(",")
+                enddate=line[6].split(",")
+                display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+                display=display.strip()
+                print(display)
+    
+            
+        
+
 
 def newLogin():
     user=login()
@@ -1692,6 +1821,6 @@ def newLogin():
 
 if __name__ == "__main__":
     #newLogin()
-    mostPop(1,"savob")
+    analitics("petar12")
     
     
