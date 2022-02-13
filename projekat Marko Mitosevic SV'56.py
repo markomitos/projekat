@@ -1,5 +1,6 @@
 #projekat Marko Mitosevic SV'56
 import datetime
+from datetime import date
 from time import daylight
 from turtle import back
 from typing import OrderedDict
@@ -268,6 +269,7 @@ def displayHeader():
 
 def backToMenu(role,user):
     unos=" "
+    print(150*"=")
     while unos[0] != "d" or unos[0] != "n":
         unos=input("Da li zelite da se vratite u meni?(Da/Ne)\n").lower().strip()
         if unos[0]== "d":
@@ -1701,7 +1703,7 @@ def analitics(user):
     while isValid==False:
         analiticsMenu()
         try:
-            unos=eval(input("Unesite broj ispre opcije koju zelite: "))
+            unos=eval(input("Unesite broj ispred opcije koju zelite: "))
             if unos in [1,2,3,4,5,6]:
                 isValid=True
                 break
@@ -1809,8 +1811,119 @@ def lRes():
                 display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
                 display=display.strip()
                 print(display)
-    
+
+def yearL():
+    lista=[]
+    landlords=[]
+    dict={}
+    apart={}
+    income={}
+    year=date.today()+datetime.timedelta(-365)
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line == "\n":
+                break
+            line=line.split("|")
+            beg=line[1].split(".")
+            begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+            if year<=begdate:
+                lista.append(line[0])
+                apart[line[0]]=""
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for  item in lista:
+            for line in lines:
+                if line == "\n":
+                    break
+                line=line.split("|")
+                if line[0]==item:
+                    landlords.append(line[7])
+                    apart[line[0]]=line[7]
+    for landlord in landlords:
+        if landlord in dict:
+            dict[landlord]+=1
+        else:
+            dict[landlord]=1
             
+    print(150*"=")
+    print("Domacin     | Ukupan broj rezervacija")
+    for landlord,reservations in dict.items():
+        print("{:12s}|{:16d}".format(landlord,reservations))
+    print(150*"=")
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line == "\n":
+                break
+            line=line.split("|")
+            beg=line[1].split(".")
+            begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+            if year<=begdate:
+                if apart[line[0]] in income:
+                    income[apart[line[0]]]+=float(line[3])
+                else:
+                    income[apart[line[0]]]=float(line[3])
+    print("Domacin     | Ukupna zarada")
+    for landlord,money in income.items():
+        print("{:12s}|".format(landlord)+f'{money:13.{2}f}'+"e")
+
+def monthL():
+    lista=[]
+    landlords=[]
+    dict={}
+    apart={}
+    income={}
+    month=date.today()+datetime.timedelta(-31)
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line == "\n":
+                break
+            line=line.split("|")
+            beg=line[1].split(".")
+            begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+            if month<=begdate:
+                lista.append(line[0])
+                apart[line[0]]=""
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for  item in lista:
+            for line in lines:
+                if line == "\n":
+                    break
+                line=line.split("|")
+                if line[0]==item:
+                    landlords.append(line[7])
+                    apart[line[0]]=line[7]
+    for landlord in landlords:
+        if landlord in dict:
+            dict[landlord]+=1
+        else:
+            dict[landlord]=1
+            
+    print(150*"=")
+    print("Domacin     | Ukupan broj rezervacija")
+    for landlord,reservations in dict.items():
+        print("{:12s}|{:16d}".format(landlord,reservations))
+    print(150*"=")
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line == "\n":
+                break
+            line=line.split("|")
+            beg=line[1].split(".")
+            begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+            if month<=begdate:
+                if apart[line[0]] in income:
+                    income[apart[line[0]]]+=float(line[3])
+                else:
+                    income[apart[line[0]]]=float(line[3])
+    print("Domacin     | Ukupna zarada")
+    for landlord,money in income.items():
+        print("{:12s}|".format(landlord)+f'{money:13.{2}f}'+"e")
+
         
 
 
