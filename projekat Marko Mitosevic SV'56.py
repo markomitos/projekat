@@ -10,8 +10,9 @@ path2= "equipment.txt"
 path3= "reservations.txt"
 path4= "blocked.txt"
 def login():
-    unos=input("Dobrodosli! Da li vec imate korisnicki nalog?(Da/Ne)").lower().strip()
+    unos=" "
     while unos[0] != "d" or unos[0] !="n":
+        unos=input("Dobrodosli! Da li vec imate korisnicki nalog?(Da/Ne)").lower().strip()
         if unos[0]== "d":#postojeci korisnik
             print("login: ")
             isUser=False
@@ -33,13 +34,13 @@ def login():
             unos=""
             unos=input("Da li zelite da se registrujete?(Da/Ne)").lower().strip()
             while unos[0] != "d" or unos[0] !="n":
-                unos = input("Pogresan unos! Molimo vas da unesete Da ili Ne").lower().strip()
+                unos = input("Pogresan unos! Molimo vas da unesete Da ili Ne: ").lower().strip()
                 if unos[0]== "d":
                     user=register()
                     return user
                 else:
                     exit()
-        unos = input("Pogresan unos! Molimo vas da unesete Da ili Ne").lower().strip()
+        print("Pogresan unos! Molimo vas da unesete Da ili Ne")
 
 
 def checkUser(user):
@@ -72,7 +73,7 @@ def register():
         isUser=checkUser(user)
         if isUser==False:
             pas=input("Unesite lozinku: ")
-            ime=input("Unesite vas ime: ")
+            ime=input("Unesite vase ime: ")
             prezime=input("Unesite vas prezime: ")
             pol=input("Unesite vas pol: ")
             tel=input("Unesite vas kontakt telefon: ")
@@ -89,6 +90,8 @@ def checkRole(user):
     with open(path,encoding ="utf-8") as file:
             lines = file.readlines()
             for line in lines:
+                if line=="\n":
+                    break
                 line = line.split("|")
                 if user == line[0]:
                     if line[7].strip()=="admin":
@@ -253,6 +256,8 @@ def listApart(role,user):
         displayHeader()
         for line in lines:
             display=""
+            if line=="\n":
+                break
             line = line.split("|")
             if line[9]=="aktivan":
                 begdate=line[5].split(",")
@@ -302,6 +307,8 @@ def searchCity():
         lines = file.readlines()
         displayHeader()
         for line in lines:
+            if line=="\n":
+                break
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
@@ -392,6 +399,8 @@ def numUpper(unos,equal,i):
         lines = file.readlines()
         displayHeader()
         for line in lines:
+            if line=="\n":
+                break
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
@@ -411,6 +420,8 @@ def numLower(unos,equal,i):
         lines = file.readlines()
         displayHeader()
         for line in lines:
+            if line=="\n":
+                break
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
@@ -442,24 +453,39 @@ def multiSearchApart(role,user):
                     lines=searchPriceM(lines)
                 break
             print("Pogresan unos, molim vas unesite validan broj!")
-        unos=input("Da li zelite da postavite jos kriterijuma za pretragu?(Da/Ne)").lower().strip()
+        unos=" "
         while unos[0] != "d" or unos[0] !="n":
+            unos=input("Da li zelite da postavite jos kriterijuma za pretragu?(Da/Ne)").lower().strip()
             if unos[0]=="d":
                 break
             elif unos[0]=="n":
                 stop=True
                 break
-            print("Molimo vas unesite da ili ne!")
+            else:
+                print("Molimo vas unesite da ili ne!")
+    for line in lines:
+        if line=="\n":
+            break
+        display=""
+        line = line.split("|")
+        begdate=line[5].split(",")
+        enddate=line[6].split(",")
+        display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+        display=display.strip()
+        print(display)
+    print(150*"=")
     backToMenu(role,user)
 
 def searchCityM(lines):
     unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
     tmpline=[]
     for line in lines:
-        line = line.split("|")
-        if line[9]=="aktivan":
-            if unos in line[4].lower():
-                tmpline=tmpline.append(line)
+        if line=="\n":
+            return tmpline
+        lin = str(line).split("|")
+        if lin[9]=="aktivan":
+            if unos in lin[4].lower():
+                tmpline.append(line)
     return tmpline
 
 def searchNumM(lines):
@@ -518,10 +544,12 @@ def numUpperM(unos,equal,i,lines):
         unos+=1
     templist=[]
     for line in lines:
+        if line=="\n":
+            return templist
         line = str(line).split("|")
         if line[9]=="aktivan":
             if unos<int(line[i]):
-                templist=templist.append(line)
+                templist.append(line)
     return templist
 
 def numLowerM(unos,equal,i,lines):
@@ -529,10 +557,12 @@ def numLowerM(unos,equal,i,lines):
         unos-=1
     templist=[]
     for line in lines:
+        if line=="\n":
+            return templist
         line = str(line).split("|")
         if line[9]=="aktivan":
             if unos>int(line[i]):
-                templist=templist.append(line)
+                templist.append(line)
     return templist
 
 def searchDate():
@@ -579,6 +609,8 @@ def dateUpper(date,equal,i):
         displayHeader()
         for line in lines:
             display=""
+            if line=="\n":
+                break
             line = line.split("|")
             if line[9]=="aktivan":
                 datum=line[i].split(".")
@@ -598,6 +630,8 @@ def dateLower(date,equal,i):
         lines = file.readlines()
         displayHeader()
         for line in lines:
+            if line=="\n":
+                break
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
@@ -646,12 +680,14 @@ def dateUpperM(date,equal,i,lines):
         date=date+datetime.timedelta(days=1)
     templist=[]
     for line in lines:
+        if line=="\n":
+            return templist
         line = str(line).split("|")
         datum=line[i].split(".")
         adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
         if line[9]=="aktivan":
             if date<adate:
-                templist=templist.append(line)
+                templist.append(line)
     return templist
 
 def dateLowerM(date,equal,i,lines):
@@ -659,12 +695,14 @@ def dateLowerM(date,equal,i,lines):
         date=date+datetime.timedelta(days=-1)
     templist=[]
     for line in lines:
+        if line=="\n":
+            return templist
         line = str(line).split("|")
         datum=line[i].split(".")
         adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
         if line[9]=="aktivan":
             if date>adate:
-                templist=templist.append(line)
+                templist.append(line)
     return templist
 
 def delEquip(user):
@@ -705,6 +743,8 @@ def checkEquipRes(user):
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         for line in lines:
+            if line=="\n":
+                return False
             line=line.split("|")
             equip=line[10].split(",")
             for i in equip:
@@ -808,6 +848,8 @@ def newApart(user):
     with open(path1,encoding ="utf-8") as file:
         readlines=file.readlines()
         for line in readlines:
+            if line=="\n":
+                break
             line = line.split("|")
             if line[0]!="\n" and line[0]!="":
                 tmp=line[0]
@@ -934,6 +976,8 @@ def checkPsp(pas,user):
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         for line in lines:
+            if line=="\n":
+                break
             line = line.split("|")
             if pas == line[0]:
                 if user==line[7]:
@@ -973,16 +1017,16 @@ def getDates(sif):
     with open(path1,encoding ="utf-8") as file:
         lines=file.readlines()
         for line in lines:
-                line=line.split("|")
-                if line[0]==sif:
-                    beg=line[5].split(",")
-                    end=line[6].split(",")
-                    i=0
-                    print("Broj | Pocetak     | Kraj     ")
-                    for date in beg:
-                        print("{:2d}.  | {:11s} | {:11s} ".format((i+1),date,end[i]))
-                        i+=1
-                return i  ,beg,end
+            line=line.split("|")
+            if line[0]==sif:
+                beg=line[5].split(",")
+                end=line[6].split(",")
+                i=0
+                print("Broj | Pocetak     | Kraj     ")
+                for date in beg:
+                    print("{:2d}.  | {:11s} | {:11s} ".format((i+1),date,end[i]))
+                    i+=1
+            return i,beg,end
                         
 
 def resApart(user):
@@ -990,6 +1034,8 @@ def resApart(user):
         lines = file.readlines()
         displayHeader()
         for line in lines:
+            if line=="\n":
+                break
             display=""
             line = line.split("|")
             if line[9]=="aktivan":
@@ -1093,19 +1139,19 @@ def getGuestNum(pas):
     with open(path1,encoding ="utf-8") as file:
         lines=file.readlines()
         for line in lines:
-                line=line.split("|")
-                if line[9]=="aktivan":
-                    if line[0]==pas:
-                        return int(line[3])
+            line=line.split("|")
+            if line[9]=="aktivan":
+                if line[0]==pas:
+                    return int(line[3])
 
 def getPrice(pas):
     with open(path1,encoding ="utf-8") as file:
         lines=file.readlines()
         for line in lines:
-                line=line.split("|")
-                if line[9]=="aktivan":
-                    if line[0]==pas:
-                        return float(line[8])
+            line=line.split("|")
+            if line[9]=="aktivan":
+                if line[0]==pas:
+                    return float(line[8])
 
 def searchRes(user):
     unos=""
@@ -1924,8 +1970,90 @@ def monthL():
     for landlord,money in income.items():
         print("{:12s}|".format(landlord)+f'{money:13.{2}f}'+"e")
 
-        
+def dayL():
+    isUser=False
+    role=-1
+    while isUser==False or role!=1:
+        user=input("Unesite korisnicko ime domacina po kojem zelite da vrsite pretragu: ")
+        isUser=checkUser(user)
+        if isUser==True:
+            role=checkRole(user)
+            if role==1:
+                break
+            else:
+                print("Dati korisnik nije domacin!")
+        else:
+            print("Unesite validnog korisnika!")
+    isDate=False
+    while isDate==False:
+        dan=input("Unesite dan za koji zelite da vidite potvrdjene apartmane, u formi dan.mesec.godina:")
+        try:
+            dan=dan.split(".")
+            date=datetime.date(int(dan[2]),int(dan[1]),int(dan[0]))
+            isDate=True
+            break
+        except:
+            print("Unesite validan datum!")
+    apart=[]
+    appApart=[]
+    income=0
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            line=line.split("|")
+            if line[7]==user:
+                apart.append(line[0])
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            line=line.split("|")
+            beg=line[1].split(".")
+            begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
+            if date>=begdate:
+                enddate=begdate+datetime.timedelta(int(line[2]))
+                if date<=enddate:
+                    if line[0] in apart:
+                        if line[5]=="prihvaćena":
+                            appApart.append(line[0])
+                            income+=float(line[3])
+    print("Ukupan broj rezervacija " f'{date}'+" za domacina " + f'{user}' + " je " + f'{len(appApart)}')
+    print("Ukupna zarada za date rezervacije je: " + f'{income}' + "e")       
 
+def cityStats():
+    lista=[]
+    cities=[]
+    dict={}
+    total=0
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for line in lines:
+            if line == "\n":
+                break
+            line=line.split("|")
+            lista.append(line[0])
+            total+=1
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        for  item in lista:
+            for line in lines:
+                if line == "\n":
+                    break
+                line=line.split("|")
+                if line[0]==item:
+                    city=line[4].split(",")
+                    cities.append(city[1])
+    for city in cities:
+        if city in dict:
+            dict[city]+=1
+        else:
+            dict[city]=1
+    print("Grad " + 20*" "+"| Zastupljenost grada")
+    for key,value in dict.items():
+        print("{:25s}|{:3d}/{:3d} {:.0%}".format(key, value,total,value/total))   
 
 def newLogin():
     user=login()
@@ -1933,7 +2061,6 @@ def newLogin():
     menu(role,user)    
 
 if __name__ == "__main__":
-    #newLogin()
-    analitics("petar12")
+    newLogin()
     
     
