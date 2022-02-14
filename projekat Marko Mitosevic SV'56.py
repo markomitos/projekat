@@ -31,15 +31,16 @@ def login():
                 print("Dati korisnik ne postoji!")
         elif unos[0]== "n":
             print("Za koriscenje aplikacije poptrebno je da registrujete nalog!")
-            unos=""
-            unos=input("Da li zelite da se registrujete?(Da/Ne)").lower().strip()
+            unos="o"
             while unos[0] != "d" or unos[0] !="n":
-                unos = input("Pogresan unos! Molimo vas da unesete Da ili Ne: ").lower().strip()
+                unos=input("Da li zelite da se registrujete?(Da/Ne)").lower().strip()
                 if unos[0]== "d":
                     user=register()
                     return user
-                else:
+                elif unos[0]=="n":
                     exit()
+                else:
+                    print("Pogresan unos! Molimo vas da unesete Da ili Ne: ")
         print("Pogresan unos! Molimo vas da unesete Da ili Ne")
 
 
@@ -72,15 +73,46 @@ def register():
         user=input("Unesite korisnicko ime(ovo cete koristiti prilikom buduce prijave): ")
         isUser=checkUser(user)
         if isUser==False:
-            pas=input("Unesite lozinku: ")
-            ime=input("Unesite vase ime: ")
-            prezime=input("Unesite vas prezime: ")
-            pol=input("Unesite vas pol: ")
-            tel=input("Unesite vas kontakt telefon: ")
-            mail=input("Unesite vas email(primer:nesto@domen): ")
+            pas=""
+            while pas=="" or len(pas)<4:
+                pas=input("Unesite lozinku: ")
+                if pas=="" or len(pas)<4:
+                    print("Sifra mora da sadrzi bar 5 karaktera!")
+            ime=""
+            while ime=="":
+                ime=input("Unesite vase ime: ")
+            prezime=""
+            while prezime=="":
+                prezime=input("Unesite vas prezime: ")
+            pol=""
+            while pol=="":
+                pol=input("Unesite vas pol: ")
+            tel=""
+            while tel=="" or len(tel)>7:
+                tel=input("Unesite vas kontakt telefon: ")
+                try:
+                    broj=int(tel)
+                    if broj>1000000:
+                        break
+                    else:
+                        print("Unesite validan broj telefona")
+                        tel=""
+                except:
+                    tel=""
+                    print("Unesite validan broj telefona")
+            mail=""
+            while mail=="" and mail.count("@")!=1:
+                mail=input("Unesite vas email(primer:nesto@domen): ")
+                if mail=="" and mail.count("@")!=1:
+                    mail=""
+                    print("Unesite validan mail!")
+            with open(path,encoding ="utf-8") as file:
+                oldfile=file.read()
+                i=oldfile.rfind("\n")
+                korisnik="\n{}|{}|{}|{}|{}|{}|{}|gost\n".format(user,pas,ime,prezime,pol,tel,mail)
+                newfile=oldfile[:i]+korisnik
             with open(path,"w",encoding ="utf-8") as file:
-                korisnik="{}|{}|{}|{}|{}|{}|{}|gost\n".format(user,pas,ime,prezime,pol,tel,mail)
-                file.write(korisnik)
+                file.write(newfile)
                 return user
 
         else:
@@ -88,18 +120,18 @@ def register():
 
 def checkRole(user):
     with open(path,encoding ="utf-8") as file:
-            lines = file.readlines()
-            for line in lines:
-                if line=="\n":
-                    break
-                line = line.split("|")
-                if user == line[0]:
-                    if line[7].strip()=="admin":
-                        return 2
-                    elif line[7].strip()=="domacin":
-                        return 1
-                    else:
-                        return 0
+        lines = file.readlines()
+        for line in lines:
+            if line=="\n":
+                break
+            line = line.split("|")
+            if user == line[0]:
+                if line[7].strip()=="admin":
+                    return 2
+                elif line[7].strip()=="domacin":
+                    return 1
+                else:
+                    return 0
 
 def menu(role,user):
     if role==0: #admin
@@ -240,7 +272,7 @@ def menuGuest(role,user):
     elif inp==4:
         mostPop(role,user)
     elif inp==5:
-        resApart(user)
+        resApart(user,1.0)#1.0 default cena, posle se koristi za popust
     elif inp==6:
         listRes(user)
     elif inp==7:
@@ -869,9 +901,29 @@ def newApart(user):
                 break
             except:
                 print("Unesite prirodan broj!")
-        lok=input("Unesite lokaciju apartmana: ")
-        begdate=input("Unesite pocetan datum termina: ")#poprsvi unos ovde\
-        enddate=input("Unesite zavrsana datum terima: ")
+        lok=""
+        while lok.count(",")!=2:
+            lok=input("Unesite lokaciju apartmana u formi Adresa, Grad, Postanski broj: ")
+            if lok.count(",")!=2:
+                print("Unesite lokaciju u pravilnoj formi!")
+        isDate=False
+        while isDate == False:
+            begdate=input("Unesite pocetan datum termina u formi dan.mesec.godina: ")
+            try:
+                bg=begdate.split(".")
+                beg=datetime.date(int(bg[2]),int(bg[1]),int(bg[0]))
+                isDate=True
+            except:
+                print("Unesite validan datum!")
+        isDate=False
+        while isDate == False:
+            enddate=input("Unesite zavrsana datum terima u formi dan.mesec.godina: ")
+            try:
+                en=enddate.split(".")
+                end=datetime.date(int(en[2]),int(en[1]),int(en[0]))
+                isDate=True
+            except:
+                print("Unesite validan datum!")
         cena=-1
         while cena <0:
             try:
@@ -1029,7 +1081,7 @@ def getDates(sif):
             return i,beg,end
                         
 
-def resApart(user):
+def resApart(user,popust):
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         displayHeader()
@@ -1104,7 +1156,7 @@ def resApart(user):
                         break
                     elif unos[0]=="n":
                         b=0
-                        glist=""
+                        glist="("+user+")"
                         break
                     print("Molimo vas odgovorite sa da ili ne!")
                 while b<brgost:
@@ -1117,7 +1169,7 @@ def resApart(user):
                         glist=glist + "," + guest
                     b=b+1
                 cenaDan=getPrice(sif)
-                cena=cenaDan*daynum
+                cena=cenaDan*daynum*popust
                 with open(path3,encoding ="utf-8") as file:
                     newfile=file.read()
                     newline=newfile.rfind("\n")
@@ -1128,6 +1180,15 @@ def resApart(user):
 
                     file.write(newfile)
                 print("Rezervacija je uspesno kreirana!")
+                unos=" "
+                while unos[0] != "d" or unos[0] !="n":
+                    unos=input("Da li zelite da rezervisete jos jednom(sa popustom od 5%)?(Da/Ne)").lower().strip()
+                    if unos[0]== "d":
+                        resApart(user,0.95)
+                    elif unos[0]=="n":
+                        break
+                    else:
+                        print("Pogresan unos! Molimo vas da unesete Da ili Ne: ")
                 backToMenu(2,user)
             else:
                 print("Unesite validan broj!")
