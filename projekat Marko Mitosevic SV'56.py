@@ -1,9 +1,7 @@
 #projekat Marko Mitosevic SV'56
 import datetime
 from datetime import date
-from time import daylight
-from turtle import back
-from typing import OrderedDict
+
 path = "users.txt"
 path1= "apartments.txt"
 path2= "equipment.txt"
@@ -13,6 +11,9 @@ def login():
     unos=" "
     while unos[0] != "d" or unos[0] !="n":
         unos=input("Dobrodosli! Da li vec imate korisnicki nalog?(Da/Ne)").lower().strip()
+        if unos=="":
+            unos=" "
+            continue
         if unos[0]== "d":#postojeci korisnik
             print("login: ")
             isUser=False
@@ -49,6 +50,8 @@ def checkUser(user):
         lines = file.readlines()
         for line in lines:
             line = line.split("|")
+            if line=="\n":
+                break
             if user == line[0]:
                 return True
     return False
@@ -309,6 +312,9 @@ def backToMenu(role,user):
     print(150*"=")
     while unos[0] != "d" or unos[0] != "n":
         unos=input("Da li zelite da se vratite u meni?(Da/Ne)\n").lower().strip()
+        if unos=="":
+            unos=" "
+            continue
         if unos[0]== "d":
             menu(role,user)
         elif unos[0]=="n":
@@ -1498,7 +1504,7 @@ def checkResPas(sif,user):
                     return True
         return False
 
-def approveRes(user):#odbijene!!
+def approveRes(user):
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         sifre=[" "]
@@ -2164,7 +2170,81 @@ def cityStats():
             dict[city]=1
     print("Grad " + 20*" "+"| Zastupljenost grada")
     for key,value in dict.items():
-        print("{:25s}|{:3d}/{:3d} {:.0%}".format(key, value,total,value/total))   
+        print("{:25s}|{:3d}/{:3d} {:.0%}".format(key, value,total,value/total))
+
+def updateDates():
+    danas=date.today()
+    zamesec=danas+datetime.timedelta(31)
+    mesecstr=str(zamesec.day)+"."+str(zamesec.month)+"."+str(zamesec.year)
+    danasstr=str(danas.day)+"."+str(danas.month)+"."+str(danas.year)
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        newlines=[]
+        for line in lines:
+            if line == "\n":
+                break
+            lin=line.split("|")
+            beg=lin[5].split(",")
+            end=lin[6].split(",")
+            i=0
+            for termin in beg:
+                t=termin.split(".")
+                bt=datetime.date(int(t[2]),int(t[1]),int(t[0]))
+                if bt>=danas or termin==beg[len(beg)-1]:
+                    kt=end[i-1].split(".")
+                    kr=end[i].split(".")
+                    kraj=datetime.date(int(kr[2]),int(kr[1]),int(kr[0]))
+                    et=datetime.date(int(kt[2]),int(kt[1]),int(kt[0]))
+                    if et<=danas:
+                        if kraj>danas:
+                            lin[5]=danasstr
+                            lin[6]=end[i]
+                        elif i==len(beg)-1:
+                            lin[5]=danasstr
+                            lin[6]=mesecstr
+                        else:
+                            lin[5]=",".join(beg[i:])
+                            lin[6]=",".join(end[i:])
+                    else:
+                        if i==0:
+                            if len(beg)!=1:
+                                lin[5]=danasstr+","+",".join(beg[i+1:])
+                                lin[6]=",".join(end[i-1:])
+                            else:
+                                lin[5]=danasstr
+                                lin[6]=end[0]
+                        else:
+                            if beg[i:]!=[]:
+                                lin[5]=danasstr+","+",".join(beg[i:])
+                                lin[6]=",".join(end[i-1:])
+                            else:
+                                lin[5]=danasstr
+                                lin[6]=end[i-1]
+                
+                i+=1
+            newline="|".join(lin)
+            newlines.append(newline)
+        newfile="".join(newlines)
+    with open(path1,"w",encoding ="utf-8") as file:
+        file.write(newfile)
+    with open(path3,encoding ="utf-8") as file:
+        lines=file.readlines()
+        newlines=[]
+        for line in lines:
+            if line == "\n":
+                break
+            lin=line.split("|")
+            dt=lin[1].split(".")
+            datum=datetime.date(int(dt[2]),int(dt[1]),int(dt[0]))
+            if datum<danas:
+                if lin[5]=="prihvaćena":
+                    lin[5]="završena"
+            newline="|".join(lin)
+            newlines.append(newline)
+        newfile="".join(newlines)
+    with open(path3,"w",encoding ="utf-8") as file:
+        file.write(newfile)
+
 
 def newLogin():
     user=login()
@@ -2172,6 +2252,7 @@ def newLogin():
     menu(role,user)    
 
 if __name__ == "__main__":
+    updateDates()
     newLogin()
     
     

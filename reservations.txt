@@ -1,5 +1,5 @@
 1|1.1.2022|1|50.0|tam|završena|1
-1|05.02.2022|7|350.0|tam,Nihil Nihilović,Kene Beri|prihvaćena|2
+1|05.02.2022|7|350.0|tam,Nihil Nihilović,Kene Beri|završena|2
 1|25.02.2022|1|100.0|rockfeller,Jeff Bezos,Elon Musk,Bill Gates|prihvaćena|3
 1|14.2.2022|2|100.0|rockfeller,Miss Rockefeller|kreirana|4
 3|1.1.2022|5|15.0|fox|fox,Branko Kljajić|završena|5
@@ -9,4 +9,3 @@
 9|23.1.2022|1|25.0|johnyh|završena|9
 8|24.1.2022|2|80|johnyh|završena|10
 7|26.1.2022|2|120.0|johnyh|završena|11
-
