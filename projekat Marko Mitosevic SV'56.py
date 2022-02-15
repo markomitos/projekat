@@ -25,7 +25,7 @@ def login():
                         pas =input("Unesite vasu lozniku: ")
                         isPas=checkPas(user,pas)
                         if isPas==True:
-                            print("Uspesna login! Dobrodosli nazad ", user, "!")
+                            print("Uspesan login! Dobrodosli nazad ", user, "!")
                             return user
                         print("Uneli ste pogresnu lozinku za dati nalog!")
                 print("Dati korisnik ne postoji!")
@@ -101,9 +101,9 @@ def register():
                     tel=""
                     print("Unesite validan broj telefona")
             mail=""
-            while mail=="" and mail.count("@")!=1:
+            while mail=="" or mail.count("@")!=1:
                 mail=input("Unesite vas email(primer:nesto@domen): ")
-                if mail=="" and mail.count("@")!=1:
+                if mail=="" or mail.count("@")!=1:
                     mail=""
                     print("Unesite validan mail!")
             with open(path,encoding ="utf-8") as file:
@@ -127,11 +127,11 @@ def checkRole(user):
             line = line.split("|")
             if user == line[0]:
                 if line[7].strip()=="admin":
-                    return 2
+                    return 0
                 elif line[7].strip()=="domacin":
                     return 1
                 else:
-                    return 0
+                    return 2
 
 def menu(role,user):
     if role==0: #admin
@@ -226,7 +226,7 @@ def menuLandlord(role,user):
     elif inp==4:
         mostPop(role,user)
     elif inp==5:
-        newApart(user,user)
+        newApart(user)
     elif inp==6:
         editApart(user)
     elif inp==7:
@@ -778,7 +778,10 @@ def checkEquipRes(user):
             if line=="\n":
                 return False
             line=line.split("|")
-            equip=line[10].split(",")
+            if line[10].count(",")>0:
+                equip=line[10].split(",")
+            else:
+                equip=line[10].strip()
             for i in equip:
                 if user==i.strip():
                     return True
@@ -856,22 +859,52 @@ def checkEquipPas(user,pas):
     return False  
 
 def newLandLord(us):
-    isUser = True
+    isUser=True
     while isUser == True:
         user=input("Unesite korisnicko ime domacina: ")
         isUser=checkUser(user)
         if isUser==False:
-            pas=input("Unesite lozinku: ")
-            ime=input("Unesite ime domacina: ")
-            prezime=input("Unesite prezime domacina: ")
-            pol=input("Unesite pol domacina: ")
-            tel=input("Unesite kontakt telefon domacina: ")
-            mail=input("Unesite mail domacina(primer:nesto@domen): ")
+            pas=""
+            while pas=="" or len(pas)<4:
+                pas=input("Unesite lozinku: ")
+                if pas=="" or len(pas)<4:
+                    print("Sifra mora da sadrzi bar 5 karaktera!")
+            ime=""
+            while ime=="":
+                ime=input("Unesite ime domacina: ")
+            prezime=""
+            while prezime=="":
+                prezime=input("Unesite prezime domacina: ")
+            pol=""
+            while pol=="":
+                pol=input("Unesite pol domacina: ")
+            tel=""
+            while tel=="" or len(tel)>7:
+                tel=input("Unesite kontakt telefon domacina: ")
+                try:
+                    broj=int(tel)
+                    if broj>1000000:
+                        break
+                    else:
+                        print("Unesite validan broj telefona")
+                        tel=""
+                except:
+                    tel=""
+                    print("Unesite validan broj telefona")
+            mail=""
+            while mail=="" or mail.count("@")!=1:
+                mail=input("Unesite email domacina (primer:nesto@domen): ")
+                if mail=="" or mail.count("@")!=1:
+                    mail=""
+                    print("Unesite validan mail!")
+            with open(path,encoding ="utf-8") as file:
+                oldfile=file.read()
+                i=oldfile.rfind("\n")
+                korisnik="\n{}|{}|{}|{}|{}|{}|{}|domacin\n".format(user,pas,ime,prezime,pol,tel,mail)
+                newfile=oldfile[:i]+korisnik
             with open(path,"w",encoding ="utf-8") as file:
-                korisnik="{}|{}|{}|{}|{}|{}|{}|domacin\n".format(user,pas,ime,prezime,pol,tel,mail)
-                file.write(korisnik)
-                #return user
-
+                file.write(newfile)
+            print("Domacin ",user," je uspesno dodat!")
         else:
             print("Dato korisnicko ime je vec u upotrebi!")
     backToMenu(0,us)
@@ -921,6 +954,9 @@ def newApart(user):
             try:
                 en=enddate.split(".")
                 end=datetime.date(int(en[2]),int(en[1]),int(en[0]))
+                if end<=beg:
+                    print("Rezervacija ne moze da se zavrsava pre nego sto pocne!")
+                    continue
                 isDate=True
             except:
                 print("Unesite validan datum!")
@@ -933,23 +969,38 @@ def newApart(user):
                 print("Unesite validnu cenu!")
         listEquip()
         unos=""
-        equip=""
+        pasList=[]
         while unos.lower() != "x":
             unos=input("Unesite sifru dodatne opreme koju imate u apartmanu(za prestanak unos unesite x): ")
             isEquip=checkEquipS(unos)
-            if isEquip==False:
+            if isEquip==False and unos.lower() != "x":
                 print("Data sifra nije povezana ni sa jednom dodatnom opremom!")
                 continue
-            equip=equip+unos+","
-    with open(path2,"r+",encoding ="utf-8") as file:
+            elif unos.lower() == "x":
+                break
+            else:
+                pasList.append(unos)
+        with open(path2,"r+",encoding ="utf-8") as file:
+            lines=file.readlines()
+            equip=""
+            for line in lines:
+                if line=="\n":
+                    break
+                line=line.split("|")
+                if line[0] in pasList:
+                    if equip=="":
+                        equip=line[1].strip()
+                    else:
+                        equip=equip+","+line[1].strip()
+    with open(path1,"r+",encoding ="utf-8") as file:
         newfile=file.read()
-    str=sifra + "|" + tip + "|" + f'{brsoba}' + "|" + f'{brgost}' + "|" + lok + "|" + begdate + "|" + enddate + "|" + user + "|" + f'{cena}' + "|" +"neaktivan" + "|" + equip + "\n\n"
+    str="\n"+f'{sifra}' + "|" + tip + "|" + f'{brsoba}' + "|" + f'{brgost}' + "|" + lok + "|" + begdate + "|" + enddate + "|" + user + "|" + f'{cena}' + "|" +"neaktivan" + "|" + equip + "\n"
     newline=newfile.rfind("\n")
     newfile=newfile[:newline]+str
-    with open(path2,"w",encoding ="utf-8") as file:
+    with open(path1,"w",encoding ="utf-8") as file:
 
         file.write(newfile)
-    print("Dodatna oprema " + unos + " je uspesno dodata")
+    print("Apartman je uspesno dodat")
     backToMenu(0,user)
 
 def listEquip():
@@ -963,7 +1014,7 @@ def listEquip():
                 break
             line=line.split("|")
             print(line[0]+"    | "+line[1].strip())
-        print(120*"=")
+        print(150*"=")
     
 
 def blockUser(user):
@@ -981,23 +1032,22 @@ def blockUser(user):
             line = line.split("|")
             if user == line[0]:
                 korisnik=lines[i]
+                break
             i=i+1
     with open(path,encoding ="utf-8") as file:
         users=file.read()
         users=users.replace(korisnik,"")
 
-    with open(path4,encoding ="utf-8") as file:
-        
+    with open(path4,encoding ="utf-8") as file:       
         newfile=file.read()
         str=user + "\n\n"
         newline=newfile.rfind("\n")
         newfile=newfile[:newline]+str
+
     with open(path2,"w",encoding ="utf-8") as file:
-
         file.write(newfile)
+
     print("Dati korisnik je uspesno blokiran")
-
-
     backToMenu(0,user)
 
 def delApart(user):
@@ -1721,7 +1771,7 @@ def editApart(user):
                         lin[8]=inp
                 inp=""
                 while inp=="":
-                    print("Trenutno stanje apartmana je " +lin[9]+ ",ako zelite da ga promenite upisite novo stanje, a ako zelite da ostane isto unesite x: ")
+                    print("Trenutni status apartmana je " +lin[9]+ ",ako zelite da ga promenite upisite novo stanje, a ako zelite da ostane isto unesite x: ")
                     inp=input("")
                     if inp[0].lower()=="x":
                         break

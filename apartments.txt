@@ -1,12 +1,11 @@
-1|ceo stan|2|4|Bulevar Mihajla Pupina 15, Novi Sad|1.2.2022,13.2.2022|4.2.2022,24.2.2022|savob|50|aktivan|TV,internet
-2|ceo stan|1|2|Hadži Ruvimova 52, Novi Sad|1.2.2022|27.2.2022|realtrump|30|aktivan|internet
-3|soba|1|2|Vuka Karadžića 5, Indjija|1.2.2022|27.2.2022|savob|15|aktivan|TV
-4|ceo stan|2|3|5. Oktobra 5, Srpska Crnja|1.2.2022|27.2.2022|savob|10|aktivan|TV
-5|ceo stan|3|6|Kneza Miloša 2, Sombor|1.2.2022|27.2.2022|realtrump|35|aktivan|TV
-6|ceo stan|2|4|Albe Malagurskog, Subotica|1.2.2022|27.2.2022|savob|40|aktivan|TV,Klima uredjaj
-7|soba|1|3|Južni Bulevar 50, Beograd|1.2.2022|27.2.2022|realtrump|60|aktivan|internet
-8|soba|1|2|Mirijevski Venac 1, Beograd|1.2.2022|27.2.2022|savob|40|TV
-9|ceo stan|2|3|Voje Radića 2, Leskovac|1.2.2022|27.2.2022|savob|25|TV
-10|soba|1|2|Jug Bogdanova 13, Niš|1.2.2022|27.2.2022|realtrump|20|TV
-
-
+1|ceo stan|2|4|Bulevar Mihajla Pupina 15, Novi Sad, 21000|1.2.2022,13.2.2022|4.2.2022,24.2.2022|savob|50|aktivan|TV,internet
+2|ceo stan|1|2|Hadži Ruvimova 52, Novi Sad, 21000|1.2.2022|27.2.2022|realtrump|30|aktivan|internet
+3|soba|1|2|Vuka Karadžića 5, Indjija, 22320|1.2.2022|27.2.2022|savob|15|aktivan|TV
+4|ceo stan|2|3|5. Oktobra 5, Srpska Crnja, 23220|1.2.2022|27.2.2022|savob|10|aktivan|TV
+5|ceo stan|3|6|Kneza Miloša 2, Sombor, 25000|1.2.2022|27.2.2022|realtrump|35|aktivan|TV
+6|ceo stan|2|4|Albe Malagurskog, Subotica, 24000|1.2.2022|27.2.2022|savob|40|aktivan|TV,Klima uredjaj
+7|soba|1|3|Južni Bulevar 50, Beograd, 11000|1.2.2022|27.2.2022|realtrump|60|aktivan|internet
+8|soba|1|2|Mirijevski Venac 1, Beograd, 11000|1.2.2022|27.2.2022|savob|40|aktivan|TV
+9|ceo stan|2|3|Voje Radića 2, Leskovac, 16000|1.2.2022|27.2.2022|savob|25|aktivan|TV
+10|soba|1|2|Jug Bogdanova 13, Niš, 18000|1.2.2022|27.2.2022|realtrump|20|aktivan|TV
+11|ceo stan|2|4|Knez Mihajlova 15, Beograd, 11000|16.3.2022|16.4.2022|savob|80|neaktivan|internet,TV
