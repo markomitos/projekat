@@ -325,22 +325,28 @@ def searchApart(role,user):
     unos = -1
     while unos not in [1,2,3,4]:
         searchMenu()
-        unos=eval(input(""))
-        if unos in [1,2,3,4]:
-            if unos==1:
-                searchCity()
-            elif unos==2:
-                searchDate()
-            elif unos==3:
-                searchNum()
-            else:
-                searchPrice()
-            break
-        print("Pogresan unos, molim vas unesite validan broj!")
+        try:
+            unos=eval(input(""))
+            if unos in [1,2,3,4]:
+                if unos==1:
+                    searchCity()
+                elif unos==2:
+                    searchDate()
+                elif unos==3:
+                    searchNum()
+                else:
+                    searchPrice()
+                break
+            print("Pogresan unos, molim vas unesite validan broj!")
+        except:
+            print("Pogresan unos, molim vas unesite validan broj!")
+            unos=-1
     backToMenu(role,user)
 
 def searchCity():
-    unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
+    unos=""
+    while unos=="":
+        unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
     with open(path1,encoding ="utf-8") as file:
         lines = file.readlines()
         displayHeader()
@@ -370,51 +376,69 @@ def searchNum():
     unos=-1
     unos1=-1
     while unos<0:
-        unos=eval(input("Unesite granicu za broj gostiju:\n"))
-        if unos>0:
-            while unos1 not in [1,2,3,4]:
-                menuNum()
-                unos1=eval(input(""))
-                if unos1 in [1,2,3,4]:
-                    
-                    if unos1 in [2,4]:
-                        equal=True
-                    elif unos1 in [1,3]:
-                        equal=False
-                    if unos1 in [1,2]:
-                        numUpper(unos,equal,3)
-                    elif unos1 in [3,4]:
-                        numLower(unos,equal,3)
-                    
-                    break
-                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
-            break
-        print("Molimo Vas unesite broj veci od nule!")
+        try:
+            unos=eval(input("Unesite granicu za broj gostiju:\n"))
+            if unos>0:
+                while unos1 not in [1,2,3,4]:
+                    menuNum()
+                    try:
+                        unos1=eval(input(""))
+                        if unos1 in [1,2,3,4]:
+                            
+                            if unos1 in [2,4]:
+                                equal=True
+                            elif unos1 in [1,3]:
+                                equal=False
+                            if unos1 in [1,2]:
+                                numUpper(unos,equal,3)
+                            elif unos1 in [3,4]:
+                                numLower(unos,equal,3)
+                            
+                            break
+                        print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                    except:
+                        print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                        unos1=""
+                        continue
+                break
+            print("Molimo Vas unesite broj veci od nule!")
+        except:
+            print("Molimo vas unesite prirodan broj!")
+            unos=-1
     
 def searchPrice():
     unos=-1
     unos1=-1
     while unos<0:
-        unos=eval(input("Unesite granicu za cenu:\n"))
-        if unos>0:
-            while unos1 not in [1,2,3,4]:
-                menuPrice()
-                unos1=eval(input(""))
-                if unos1 in [1,2,3,4]:
-                    
-                    if unos1 in [2,4]:
-                        equal=True
-                    elif unos1 in [1,3]:
-                        equal=False
-                    if unos1 in [1,2]:
-                        numUpper(unos,equal,8)
-                    elif unos1 in [3,4]:
-                        numLower(unos,equal,8)
-                    
-                    break
-                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
-            break
-        print("Molimo Vas unesite broj veci od nule!")
+        try:
+            unos=eval(input("Unesite granicu za cenu:\n"))
+            if unos>0:
+                while unos1 not in [1,2,3,4]:
+                    menuPrice()
+                    try:
+                        unos1=eval(input(""))
+                        if unos1 in [1,2,3,4]:
+                            
+                            if unos1 in [2,4]:
+                                equal=True
+                            elif unos1 in [1,3]:
+                                equal=False
+                            if unos1 in [1,2]:
+                                numUpper(unos,equal,8)
+                            elif unos1 in [3,4]:
+                                numLower(unos,equal,8)
+                            
+                            break
+                        print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                    except:
+                        print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                        unos1=""
+                        continue  
+                break
+            print("Molimo Vas unesite broj veci od nule!")
+        except:
+            print("Molimo Vas unesite broj veci od nule!")
+            unos=-1
 
 def menuNum():
     print("Unesite broj ispred zelenje opcije pretrage")
@@ -479,18 +503,23 @@ def multiSearchApart(role,user):
     while stop == False:    
         while unos not in [1,2,3,4]:
             searchMenu()
-            unos=eval(input(""))
-            if unos in [1,2,3,4]:
-                if unos==1:
-                    lines=searchCityM(lines)
-                elif unos==2:
-                    lines=searchDateM(lines)
-                elif unos==3:
-                    lines=searchNumM(lines)
-                else:
-                    lines=searchPriceM(lines)
-                break
-            print("Pogresan unos, molim vas unesite validan broj!")
+            try:
+                unos=eval(input(""))
+                if unos in [1,2,3,4]:
+                    if unos==1:
+                        lines=searchCityM(lines)
+                    elif unos==2:
+                        lines=searchDateM(lines)
+                    elif unos==3:
+                        lines=searchNumM(lines)
+                    else:
+                        lines=searchPriceM(lines)
+                    break
+                print("Pogresan unos, molim vas unesite validan broj!")
+            except:
+                print("Pogresan unos, molim vas unesite validan broj!")
+                unos=""
+                continue
         unos=" "
         while unos[0] != "d" or unos[0] !="n":
             unos=input("Da li zelite da postavite jos kriterijuma za pretragu?(Da/Ne)").lower().strip()
@@ -501,21 +530,29 @@ def multiSearchApart(role,user):
                 break
             else:
                 print("Molimo vas unesite da ili ne!")
-    for line in lines:
-        if line=="\n":
-            break
-        display=""
-        line = line.split("|")
-        begdate=line[5].split(",")
-        enddate=line[6].split(",")
-        display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
-        display=display.strip()
-        print(display)
-    print(150*"=")
+    if lines==None:
+        print("Trenutno nema apartmana koji ispunjavaju date kriterijume")
+        backToMenu(role,user)
+    try:
+        for line in lines:
+            if line=="\n":
+                break
+            display=""
+            line = line.split("|")
+            begdate=line[5].split(",")
+            enddate=line[6].split(",")
+            display="{:6s}|{:9s}| {:8s}| {:11s}| {:49s}| {:11s}-{:11s}| {:11s}| {:12s}| {:49s}".format(line[0],line[1],line[2],line[3],line[4],begdate[0],enddate[0],line[7],line[8],line[10].rstrip())
+            display=display.strip()
+            print(display)
+        print(150*"=")
+    except:
+        print("Trenutno nema apartmana koji ispunjavaju date kriterijume")
     backToMenu(role,user)
 
 def searchCityM(lines):
-    unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
+    unos=""
+    while unos=="":
+        unos=input("Unesite grad ili deo imena grada za pretragu:").lower()
     tmpline=[]
     for line in lines:
         if line=="\n":
@@ -530,51 +567,64 @@ def searchNumM(lines):
     unos=-1
     unos1=-1
     while unos<0:
-        unos=eval(input("Unesite granicu za broj gostiju:\n"))
-        if unos>0:
-            while unos1 not in [1,2,3,4]:
-                menuNum()
-                unos1=eval(input(""))
-                if unos1 in [1,2,3,4]:
-                    
-                    if unos1 in [2,4]:
-                        equal=True
-                    elif unos1 in [1,3]:
-                        equal=False
-                    if unos1 in [1,2]:
-                        numUpperM(unos,equal,3,lines)
-                    elif unos1 in [3,4]:
-                        numLowerM(unos,equal,3,lines)
-                    
-                    break
-                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
-            break
-        print("Molimo Vas unesite broj veci od nule!")
+        try:
+            unos=eval(input("Unesite granicu za broj gostiju:\n"))
+            if unos>0:
+                while unos1 not in [1,2,3,4]:
+                    menuNum()
+                    try:
+                        unos1=eval(input(""))
+                        if unos1 in [1,2,3,4]:
+                            
+                            if unos1 in [2,4]:
+                                equal=True
+                            elif unos1 in [1,3]:
+                                equal=False
+                            if unos1 in [1,2]:
+                                numUpperM(unos,equal,3,lines)
+                            elif unos1 in [3,4]:
+                                numLowerM(unos,equal,3,lines)
+                            
+                            break
+                        print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                    except:
+                        print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                        unos1=""
+                        continue
+                break
+            print("Molimo Vas unesite broj veci od nule!")
+        except:
+            print("Molimo Vas unesite broj veci od nule!")
+            unos=-1
+
 
 def searchPriceM(lines):
     unos=-1
     unos1=-1
     while unos<0:
-        unos=eval(input("Unesite granicu za cenu:\n"))
-        if unos>0:
-            while unos1 not in [1,2,3,4]:
-                menuPrice()
-                unos1=eval(input(""))
-                if unos1 in [1,2,3,4]:
-                    
-                    if unos1 in [2,4]:
-                        equal=True
-                    elif unos1 in [1,3]:
-                        equal=False
-                    if unos1 in [1,2]:
-                        numUpperM(unos,equal,8,lines)
-                    elif unos1 in [3,4]:
-                        numLowerM(unos,equal,8,lines)
-                    
-                    break
-                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
-            break
-        print("Molimo Vas unesite broj veci od nule!")
+        try:
+            unos=eval(input("Unesite granicu za cenu:\n"))
+            if unos>0:
+                while unos1 not in [1,2,3,4]:
+                    menuPrice()
+                    unos1=eval(input(""))
+                    if unos1 in [1,2,3,4]:
+                        
+                        if unos1 in [2,4]:
+                            equal=True
+                        elif unos1 in [1,3]:
+                            equal=False
+                        if unos1 in [1,2]:
+                            numUpperM(unos,equal,8,lines)
+                        elif unos1 in [3,4]:
+                            numLowerM(unos,equal,8,lines)
+                        
+                        break
+                    print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                break
+            print("Molimo Vas unesite broj veci od nule!")
+        except:
+            print("Molimo Vas unesite broj veci od nule!")
 
 
 def numUpperM(unos,equal,i,lines):
@@ -695,20 +745,25 @@ def searchDateM(lines):
             isDate=True
             while unos1 not in [1,2,3,4]:
                 dateMenu()
-                unos1=eval(input(""))
-                if unos1 in [1,2,3,4]:
-                    
-                    if unos1 in [2,4]:
-                        equal=True
-                    elif unos1 in [1,3]:
-                        equal=False
-                    if unos1 in [1,2]:
-                        dateUpperM(date,equal,5,lines)
-                    elif unos1 in [3,4]:
-                        dateLowerM(date,equal,6,lines)
-                    
-                    break
-                print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                try:
+                    unos1=eval(input(""))
+                    if unos1 in [1,2,3,4]:
+                        
+                        if unos1 in [2,4]:
+                            equal=True
+                        elif unos1 in [1,3]:
+                            equal=False
+                        if unos1 in [1,2]:
+                            dateUpperM(date,equal,5,lines)
+                        elif unos1 in [3,4]:
+                            dateLowerM(date,equal,6,lines)
+                        
+                        break
+                    print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                except:
+                    print("Pogresan unos,molimo Vas da unesete validnu opciju!")
+                    unos1=""
+                    continue
             break
         except:
             print("Molimo Vas unesite validan datum!")
@@ -933,6 +988,7 @@ def newApart(user):
                 break
             except:
                 print("Unesite prirodan broj!")
+                brsoba=-1
         brgost=-1
         while brgost <0:
             try:
@@ -940,6 +996,7 @@ def newApart(user):
                 break
             except:
                 print("Unesite prirodan broj!")
+                brgost=-1
         lok=""
         while lok.count(",")!=2:
             lok=input("Unesite lokaciju apartmana u formi Adresa, Grad, Postanski broj: ")
@@ -973,6 +1030,7 @@ def newApart(user):
                 break
             except:
                 print("Unesite validnu cenu!")
+                cena=-1
         listEquip()
         unos=""
         pasList=[]
@@ -1071,12 +1129,26 @@ def delApart(user):
         i=0
         for line in lines:
             line = line.split("|")
-            if user == line[0]:
+            if sifra == line[0]:
                 apartman=lines[i]
+                break
             i=i+1
     with open(path1,encoding ="utf-8") as file:
         users=file.read()
         users=users.replace(apartman,"")
+    with open(path1,"w",encoding ="utf-8") as file:
+        file.write(users)
+    with open(path1,encoding ="utf-8") as file:
+        lines=file.readlines()
+        newfile="".join(lines)
+        for line in lines:
+            if line=="\n":
+                break
+            lin=line.split("|")
+            if lin[0]==sifra:
+                newfile=newfile.replace(line,"")
+    with open(path1,"w",encoding ="utf-8") as file:
+        file.write(newfile)           
     print("Apartman je uspesno obrisan!")
     backToMenu(1,user)
 
@@ -1190,18 +1262,21 @@ def resApart(user,popust):
 
                 valid=False
                 while valid==False:
-                    daynum=eval(input("Unesite broj dana koji zelite da rezervsite u terminu: "))
-                    if daynum>0:
-                        try:
-                            enddate=begdate+datetime.timedelta(days=daynum)
-                            if enddate>kraj:
-                                print("Unesite validan broj dana za dati termin!")
-                                continue
-                            else:
-                                valid=True
-                                break
-                        except:
-                            print("Unesite validan broj dana!")
+                    try:
+                        daynum=eval(input("Unesite broj dana koji zelite da rezervsite u terminu: "))
+                        if daynum>0:
+                            try:
+                                enddate=begdate+datetime.timedelta(days=daynum)
+                                if enddate>kraj:
+                                    print("Unesite validan broj dana za dati termin!")
+                                    continue
+                                else:
+                                    valid=True
+                                    break
+                            except:
+                                print("Unesite validan broj dana!")
+                    except:
+                        print("Unesite validan broj dana!")
                 brgost=getGuestNum(sif)
                 unos="o"
                 while unos[0] != "d" or unos[0] !="n":
@@ -1250,6 +1325,7 @@ def resApart(user,popust):
                 print("Unesite validan broj!")
         except:
             print("Unesite validan broj!")
+            num=i+2
 
 
 def getGuestNum(pas):
@@ -2254,5 +2330,3 @@ def newLogin():
 if __name__ == "__main__":
     updateDates()
     newLogin()
-    
-    
