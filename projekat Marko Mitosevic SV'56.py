@@ -581,9 +581,11 @@ def searchNumM(lines):
                             elif unos1 in [1,3]:
                                 equal=False
                             if unos1 in [1,2]:
-                                numUpperM(unos,equal,3,lines)
+                                lines=numUpperM(unos,equal,3,lines)
+                                return lines
                             elif unos1 in [3,4]:
-                                numLowerM(unos,equal,3,lines)
+                                lines=numLowerM(unos,equal,3,lines)
+                                return lines
                             
                             break
                         print("Pogresan unos,molimo Vas da unesete validnu opciju!")
@@ -603,7 +605,7 @@ def searchPriceM(lines):
     unos1=-1
     while unos<0:
         try:
-            unos=eval(input("Unesite granicu za cenu:\n"))
+            unos=eval(input("Unesite granicu za cenu:"))
             if unos>0:
                 while unos1 not in [1,2,3,4]:
                     menuPrice()
@@ -614,15 +616,18 @@ def searchPriceM(lines):
                             equal=True
                         elif unos1 in [1,3]:
                             equal=False
-                        if unos1 in [1,2]:
-                            numUpperM(unos,equal,8,lines)
-                        elif unos1 in [3,4]:
-                            numLowerM(unos,equal,8,lines)
                         
+                        if unos1 in [1,2]:
+                            lines=numUpperM(unos,equal,8,lines)
+                            return lines
+                        elif unos1 in [3,4]:
+                            lines=numLowerM(unos,equal,8,lines)
+                            return lines
                         break
                     print("Pogresan unos,molimo Vas da unesete validnu opciju!")
                 break
-            print("Molimo Vas unesite broj veci od nule!")
+            else:
+                print("Molimo Vas unesite broj veci od nule!")
         except:
             print("Molimo Vas unesite broj veci od nule!")
 
@@ -634,9 +639,9 @@ def numUpperM(unos,equal,i,lines):
     for line in lines:
         if line=="\n":
             return templist
-        line = str(line).split("|")
-        if line[9]=="aktivan":
-            if unos<int(line[i]):
+        lin = str(line).split("|")
+        if lin[9]=="aktivan":
+            if unos<int(lin[i]):
                 templist.append(line)
     return templist
 
@@ -647,9 +652,9 @@ def numLowerM(unos,equal,i,lines):
     for line in lines:
         if line=="\n":
             return templist
-        line = str(line).split("|")
-        if line[9]=="aktivan":
-            if unos>int(line[i]):
+        lin = str(line).split("|")
+        if lin[9]=="aktivan":
+            if unos>int(lin[i]):
                 templist.append(line)
     return templist
 
@@ -701,7 +706,8 @@ def dateUpper(date,equal,i):
                 break
             line = line.split("|")
             if line[9]=="aktivan":
-                datum=line[i].split(".")
+                dat=line[i].split(",")
+                datum=dat[0].split(".")
                 adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
                 if date<adate:
                     begdate=line[5].split(",")
@@ -754,9 +760,11 @@ def searchDateM(lines):
                         elif unos1 in [1,3]:
                             equal=False
                         if unos1 in [1,2]:
-                            dateUpperM(date,equal,5,lines)
+                            lines=dateUpperM(date,equal,5,lines)
+                            return lines
                         elif unos1 in [3,4]:
-                            dateLowerM(date,equal,6,lines)
+                            lines=dateLowerM(date,equal,6,lines)
+                            return lines
                         
                         break
                     print("Pogresan unos,molimo Vas da unesete validnu opciju!")
@@ -775,10 +783,11 @@ def dateUpperM(date,equal,i,lines):
     for line in lines:
         if line=="\n":
             return templist
-        line = str(line).split("|")
-        datum=line[i].split(".")
+        lin = str(line).split("|")
+        dat=lin[i].split(",")
+        datum=dat[0].split(".")
         adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
-        if line[9]=="aktivan":
+        if lin[9]=="aktivan":
             if date<adate:
                 templist.append(line)
     return templist
@@ -790,10 +799,11 @@ def dateLowerM(date,equal,i,lines):
     for line in lines:
         if line=="\n":
             return templist
-        line = str(line).split("|")
-        datum=line[i].split(".")
+        lin = str(line).split("|")
+        dat=lin[i].split(",")
+        datum=dat[len(dat)-1].split(".")
         adate=datetime.date(int(datum[2]),int(datum[1]),int(datum[0]))
-        if line[9]=="aktivan":
+        if lin[9]=="aktivan":
             if date>adate:
                 templist.append(line)
     return templist
@@ -860,7 +870,7 @@ def newEquip(user):
         if good==False:
             while goodp==True:
                 pas=input("Unesite sifru za datu dodatnu opremu\n(u obliku dvocifrenog broja,ako je broj jednocifren ispred brojs napisite nulu): ")
-                goodp=checkEquipPas(unos,pas)
+                goodp=checkNewEquip(unos,pas)
                 if goodp==False:
                     with open(path2,"r+",encoding ="utf-8") as file:
                         newfile=file.read()
@@ -918,6 +928,19 @@ def checkEquipPas(user,pas):
                 else:
                     return False
     return False  
+
+def checkNewEquip(user,pas):
+    with open(path2,encoding ="utf-8") as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.split("|")
+            if "\n"== line[0]:
+                break
+            if user == line[1].strip():
+                return True
+            elif pas== line[0]:
+                    return True
+    return False
 
 def newLandLord(us):
     isUser=True
@@ -1199,14 +1222,21 @@ def getDates(sif):
         for line in lines:
             line=line.split("|")
             if line[0]==sif:
-                beg=line[5].split(",")
-                end=line[6].split(",")
-                i=0
-                print("Broj | Pocetak     | Kraj     ")
-                for date in beg:
-                    print("{:2d}.  | {:11s} | {:11s} ".format((i+1),date,end[i]))
-                    i+=1
-            return i,beg,end
+                if line[5].count(",")>0:
+                    beg=line[5].split(",")
+                    end=line[6].split(",")
+                    i=0
+                    print("Broj | Pocetak     | Kraj     ")
+                    for date in beg:
+                        print("{:2d}.  | {:11s} | {:11s} ".format((i+1),date,end[i]))
+                        i+=1
+                else:
+                    print("Broj | Pocetak     | Kraj     ")
+                    i=1
+                    beg=line[5]
+                    end=line[6]
+                    print("{:2d}.  | {:11s} | {:11s} ".format((i),beg,end))
+        return i,beg,end
                         
 
 def resApart(user,popust):
@@ -1240,10 +1270,16 @@ def resApart(user,popust):
             num=eval(input("Unesite broj ispred termina koji zelite da rezervisete: "))
             if num<i+1 and num>0:
                 num=num-1
-                poc=beg[num].split(".")
-                pocetak=datetime.date(int(poc[2]),int(poc[1]),int(poc[0]))
-                krj=end[num].split(".")
-                kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
+                if num==0:
+                    poc=beg.split(".")
+                    pocetak=datetime.date(int(poc[2]),int(poc[1]),int(poc[0]))
+                    krj=end.split(".")
+                    kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
+                else:
+                    poc=beg[num].split(".")
+                    pocetak=datetime.date(int(poc[2]),int(poc[1]),int(poc[0]))
+                    krj=end[num].split(".")
+                    kraj=datetime.date(int(krj[2]),int(krj[1]),int(krj[0]))
                 isDate=False
                 while isDate==False:
                     begg=input("Unesite pocetni datum rezervacije u formatu dan.mesec.godina: ")
@@ -1263,7 +1299,8 @@ def resApart(user,popust):
                 valid=False
                 while valid==False:
                     try:
-                        daynum=eval(input("Unesite broj dana koji zelite da rezervsite u terminu: "))
+                        daynum=input("Unesite broj dana koji zelite da rezervsite u terminu: ")
+                        daynum=int(daynum)
                         if daynum>0:
                             try:
                                 enddate=begdate+datetime.timedelta(days=daynum)
@@ -1305,7 +1342,7 @@ def resApart(user,popust):
                     newfile=file.read()
                     newline=newfile.rfind("\n")
                     sifra=newfile.count("\n")
-                    str=sif + "|"  + pdan + "|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "|" + f'{sifra}' + "\n\n"
+                    str="\n"+sif + "|"  + pdan + "|" + f'{daynum}' +"|" + f'{cena}' + "|" + glist + "|" + "kreirana" + "|" + f'{sifra}' + "\n\n"
                     newfile=newfile[:newline]+str
                 with open(path3,"w",encoding ="utf-8") as file:
 
@@ -1518,12 +1555,13 @@ def delRes(user):
             if line=="\n":
                 break
             lin=line.split("|")
-            if lin[5].strip()=="prihvaćena":
-                resetTermin(lin[1],lin[2],lin[0])
+            if lin[6].strip()==sif:
+                if lin[5].strip()=="prihvaćena":
+                    resetTermin(lin[1],lin[2],lin[0])
         i=0
         for line in lines:
             line = line.split("|")
-            if user == line[0]:
+            if lin[6].strip()==sif:
                 res=lines[i]
                 break
             i=i+1
@@ -1537,7 +1575,7 @@ def delRes(user):
     backToMenu(2,user)
 
 def resetTermin(beglist,days,sif):
-    beg=beglist.split(".")
+    beg=str(beglist).split(".")
     begdate=datetime.date(int(beg[2]),int(beg[1]),int(beg[0]))
     begdate= begdate + datetime.timedelta(-1)
     enddate=begdate+datetime.timedelta(days+2)
@@ -1575,9 +1613,13 @@ def checkResPas(sif,user):
                 break
             lin=line.split("|")
             if lin[6].strip()==sif:
-                gost=lin[4].split(",")
-                if gost[0]==user:
-                    return True
+                if lin[4].count(",")>0:
+                    gost=lin[4].split(",")
+                    if gost[0]==user:
+                        return True
+                else:
+                    if lin[4]==user:
+                        return True
         return False
 
 def approveRes(user):
