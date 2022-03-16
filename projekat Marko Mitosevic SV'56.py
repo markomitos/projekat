@@ -835,7 +835,7 @@ def delEquip(user):
                         break
                     else:
                         print("Data dodatna oprema je u upotrebi u apartmanima!")
-                        delEquip()
+                        delEquip(user)
                 print("Data sifra i dodatna oprema se ne poklapaju!")
         if good==True:
             break
